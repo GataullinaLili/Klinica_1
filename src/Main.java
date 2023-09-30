@@ -29,7 +29,8 @@ public class Main {
         try {
             connection = DriverManager.getConnection(url, user, password); //открытие соединения с базой данных
 
-            // 1) Ведомость регистратуры для разноса мед.карт по кабнетам на день (? сортировка по кабинету)
+            // 1) Ведомость регистратуры для разноса мед.карт по кабнетам на день
+            // сейчас выводит ведомость на сегодняшний день (? сортировка по кабинету)
             String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());// текущая дата
             System.out.print("Ведомость регистратуры для разноса мед.карт по кабнетам на день ");
             System.out.println(date);
@@ -73,7 +74,7 @@ public class Main {
                 }
             }
             System.out.println();
-            // 4) Какая карта чаще всего встречается
+            // ?4) Какая карта чаще всего встречается
             System.out.println("Чаще всего ходит по врачам ");
             statement = connection.createStatement(); // оператор запроса
             rs = statement.executeQuery("SELECT * FROM Записи_пациента;"); //результат запроса на поиск
