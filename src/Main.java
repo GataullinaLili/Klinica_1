@@ -114,7 +114,6 @@ public class Main {
         m3.add(m31);
         JMenuItem m41 = new JMenuItem("Открыть");
         m4.add(m41);
-
         // Создание панели внизу и добавление компонентов
         JPanel panel = new JPanel(); // панель не видна при выводе
         JLabel lb1 = new JLabel("Введите № истории");
