@@ -11,7 +11,7 @@ public class Main {
         String driver = "org.postgresql.Driver";
         String url = "jdbc:postgresql://localhost/postgres";
         String user = "postgres"; // имя пользователя по умолчанию
-        String password = "postgres"; // пароль к серверу базы данных
+        String password = "12345"; // пароль к серверу базы данных
         //
         try {
             Class.forName(driver);
@@ -30,18 +30,23 @@ public class Main {
             // 1) Ведомость регистратуры для разноса мед.карт по кабнетам на день
             // сейчас выводит ведомость на сегодняшний день (? сортировка по кабинету)
             String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());// текущая дата
-            System.out.print("Ведомость регистратуры для разноса мед.карт по кабнетам на день ");
-            System.out.println(date);
             statement = connection.createStatement(); // оператор запроса
             rs = statement.executeQuery("SELECT * FROM Записи_пациентов;");
+            boolean check1=false;
+            System.out.print("Ведомость регистратуры для разноса мед.карт по кабнетам на сегодняшний день "+date);
             while (rs.next()) { // пока есть данные
-                if(date.equals(rs.getString("Дата_приема"))) {
+                if (date.equals(rs.getString("Дата_приема"))) {
+                    System.out.println();
                     System.out.print("Кабинет №" + rs.getString("Кабинет") + ": ");
                     System.out.print("мед.карта №" + rs.getString("Карта_пациента") + " в");
                     System.out.print(rs.getString("Время_приема"));
-                    System.out.println();
+                    check1=true;
                 }
             }
+            if (check1==false){
+                System.out.println(" отсутствует");
+            }
+            System.out.println();
             System.out.println();
 
             // 2) Расписание работы врачей (? сортировка по ФИО врачей или дате)
@@ -55,26 +60,32 @@ public class Main {
                 System.out.println();
             }
             System.out.println();
-            // ?3) Ведомость приема врача за месяц (сколько, когда врач принял пациентов и кого конкретно)
+            // 3) Ведомость приема врача за месяц (сколько, когда врач принял пациентов и кого конкретно)
             statement = connection.createStatement(); // оператор запроса
             rs = statement.executeQuery("SELECT * FROM Записи_пациентов;"); //результат запроса на поиск
             Scanner scanner = new Scanner (System.in);
             System.out.println("Введите месяц:");
             int m = Integer.parseInt(scanner.nextLine());//ввод месяца
-            System.out.println();
+            System.out.println("Введите год:");
+            int y = Integer.parseInt(scanner.nextLine());//ввод года
             System.out.println("Введите ФИО врача:");
             String fio = scanner.nextLine();
-
-            System.out.println("Ведомость приема врача " + fio + " за месяц "+ m + "\n");
+            boolean check3=false;
+            System.out.print("Ведомость приема врача " + fio + " за " + m + " месяц " + y + " года");
             while (rs.next()) { // пока есть данные
-                if (rs.getString("ФИО_врача").equals(fio) && (rs.getDate("Дата_приема").getMonth()+1) == m && rs.getBoolean("Отметка")==true) {
-                    System.out.print("Врач " + rs.getString("ФИО_врача"));
-                    System.out.print(" принял пациента с мед.картой №"+rs.getString("Карта_пациента") + " ");
-                    System.out.print(rs.getString("Время_приема")+" ");
-                    System.out.print(rs.getString("Дата_приема"));
+                if (rs.getString("ФИО_врача").equals(fio) && (rs.getDate("Дата_приема").getMonth() + 1) == m && (rs.getDate("Дата_приема").getYear() + 1900) == y && rs.getBoolean("Отметка") == true) {
                     System.out.println();
+                    System.out.print("Врач " + rs.getString("ФИО_врача"));
+                    System.out.print(" принял пациента с мед.картой №" + rs.getString("Карта_пациента") + " ");
+                    System.out.print(rs.getString("Дата_приема") + " ");
+                    System.out.print(rs.getString("Время_приема"));
+                    check3=true;
+                    }
                 }
+            if (check3==false) {
+                System.out.println(" отсутствует");
             }
+            System.out.println();
             System.out.println();
 
             // 4) Кто больше всего ходит по врачам
@@ -127,7 +138,7 @@ public class Main {
                     preparedStatement.setInt(1, i); //замена 1-го знака вопроса переменной i (номер карты)
                     rs = preparedStatement.executeQuery();
                     while (rs.next()){
-                        System.out.println(rs.getString("ФИО")+" с номером карты "+ rs.getString("Номер_карты"));
+                        System.out.println("Пациент " +rs.getString("ФИО")+" с № карты "+ rs.getString("Номер_карты"));
                     }
                 }
             }
