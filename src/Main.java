@@ -1,19 +1,17 @@
 import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.sql.Date;
-import java.util.Scanner;
 import java.util.*;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         String driver = "org.postgresql.Driver";
         String url = "jdbc:postgresql://localhost/postgres";
         String user = "postgres"; // имя пользователя по умолчанию
-        String password = "12345"; // пароль к серверу базы данных
+        String password = "postgres"; // пароль к серверу базы данных
         //
         try {
             Class.forName(driver);
@@ -35,7 +33,7 @@ public class Main {
             System.out.print("Ведомость регистратуры для разноса мед.карт по кабнетам на день ");
             System.out.println(date);
             statement = connection.createStatement(); // оператор запроса
-            rs = statement.executeQuery("SELECT * FROM Записи_пациента;");
+            rs = statement.executeQuery("SELECT * FROM Записи_пациентов;");
             while (rs.next()) { // пока есть данные
                 if(date.equals(rs.getString("Дата_приема"))) {
                     System.out.print("Кабинет №" + rs.getString("Кабинет") + ": ");
@@ -59,13 +57,17 @@ public class Main {
             System.out.println();
             // ?3) Ведомость приема врача за месяц (сколько, когда врач принял пациентов и кого конкретно)
             statement = connection.createStatement(); // оператор запроса
-            rs = statement.executeQuery("SELECT * FROM Записи_пациента;"); //результат запроса на поиск
-            Scanner in = new Scanner (System.in);
-            System.out.println("Введите месяц");
-            int m= in.nextInt();//ввод месяца
-            System.out.println("Ведомость приема врача за месяц "+m);
+            rs = statement.executeQuery("SELECT * FROM Записи_пациентов;"); //результат запроса на поиск
+            Scanner scanner = new Scanner (System.in);
+            System.out.println("Введите месяц:");
+            int m = Integer.parseInt(scanner.nextLine());//ввод месяца
+            System.out.println();
+            System.out.println("Введите ФИО врача:");
+            String fio = scanner.nextLine();
+
+            System.out.println("Ведомость приема врача " + fio + " за месяц "+ m + "\n");
             while (rs.next()) { // пока есть данные
-                if (rs.getBoolean("Отметка")==true) {
+                if (rs.getString("ФИО_врача").equals(fio) && (rs.getDate("Дата_приема").getMonth()+1) == m && rs.getBoolean("Отметка")==true) {
                     System.out.print("Врач " + rs.getString("ФИО_врача"));
                     System.out.print(" принял пациента с мед.картой №"+rs.getString("Карта_пациента") + " ");
                     System.out.print(rs.getString("Время_приема")+" ");
@@ -74,15 +76,62 @@ public class Main {
                 }
             }
             System.out.println();
-            // ?4) Какая карта чаще всего встречается
-            System.out.println("Чаще всего ходит по врачам ");
+
+            // 4) Кто больше всего ходит по врачам
             statement = connection.createStatement(); // оператор запроса
-            rs = statement.executeQuery("SELECT * FROM Записи_пациента;"); //результат запроса на поиск
-            int maxFrequent = 0;
-            int num = 0;
-            int count = rs.getMetaData().getColumnCount();
-            for (int i = 0; i < count; i++) {
+            List<Integer> listOfNumCards = new ArrayList<>();
+            rs = statement.executeQuery("SELECT * FROM Записи_пациентов;"); //результат запроса на поиск
+
+            //отбор записей пациентов с отметкой о посещениии true
+            while (rs.next()){
+                if (rs.getBoolean("Отметка")==true){
+                    listOfNumCards.add(rs.getInt("Карта_пациента"));
+                }
             }
+
+            //максимальное количество посещений среди всех записей
+            int maxCount = 0;
+
+            //список номеров карт поциентов с максимальным числом посещений
+            ArrayList <Integer>mostRepeatedPatientsNumbers = new ArrayList<>();
+
+            //проверка наличия посещений
+            if (listOfNumCards.isEmpty()){
+                System.out.println("Записей пациентов нет");
+            } else {
+
+                //нахождения максимального числа посещений пациента у врача
+                for (int i : listOfNumCards) {
+                    int count = Collections.frequency(listOfNumCards, i); // нахождение количества определённого элемента в коллекции
+                    if (count > maxCount) {
+                        maxCount = count;
+                    }
+                }
+
+                //определение номера карт пациентов с максимальным числом посещений
+                for (int i : listOfNumCards){
+                    int count = Collections.frequency(listOfNumCards, i);
+                    if(count == maxCount){
+                        if (!(mostRepeatedPatientsNumbers.contains(i))){
+                            mostRepeatedPatientsNumbers.add(i);
+                        }
+                    }
+                }
+
+                //вывод пациентов с максимальным числом посещений
+                System.out.println("Чаще всего ходит по врачам: ");
+
+                for (int i : mostRepeatedPatientsNumbers){
+                    String query = "SELECT * FROM Пациенты WHERE Номер_карты = ?"; //создание запроса на получение записи Пациента с конкретным номером карты
+                    PreparedStatement preparedStatement = connection.prepareStatement(query); //создание параметризированного запроса
+                    preparedStatement.setInt(1, i); //замена 1-го знака вопроса переменной i (номер карты)
+                    rs = preparedStatement.executeQuery();
+                    while (rs.next()){
+                        System.out.println(rs.getString("ФИО")+" с номером карты "+ rs.getString("Номер_карты"));
+                    }
+                }
+            }
+
 
             // закрываем соединение с базой данных
             statement.close();
@@ -139,4 +188,3 @@ public class Main {
         frame.setVisible(true);
     }
 }
-
