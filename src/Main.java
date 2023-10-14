@@ -214,15 +214,15 @@ public class Main {
         JLabel lb053 = new JLabel("Специальность врача");
         JTextField tf053 = new JTextField(20); // специальность до 20 символов
         JLabel lb054 = new JLabel("Кабинет");
-        JTextField tf054 = new JTextField(8);
+        JTextField tf054 = new JTextField(3);
         JLabel lb055 = new JLabel("№ карты пациента");
-        JTextField tf055 = new JTextField(8);
+        JTextField tf055 = new JTextField(10);
         JLabel lb056 = new JLabel("Дата приема");
-        JTextField tf056 = new JTextField(3);
+        JTextField tf056 = new JTextField(8);
         JLabel lb057 = new JLabel("Время приема");
-        JTextField tf057 = new JTextField(8);
+        JTextField tf057 = new JTextField(6);
         JLabel lb058 = new JLabel("Отметка о посещении");
-        JTextField tf058 = new JTextField(3);
+        JCheckBox tf058 = new JCheckBox();
         JButton add05 = new JButton("Добавить");
         JButton del05 = new JButton("Удалить");
 
@@ -847,7 +847,7 @@ public class Main {
                         model5.addRow(new Object[]{"<html><b>ID врача</b></html>","<html><b>ФИО врача</b></html>","<html><b>Специальность</b></html>","<html><b>Кабинет</b></html>","<html><b>Номер карты пациента</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>","<html><b>Отметка</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                         while (rs.next()) { // пока есть данные
-                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО_врача"),rs.getString("Специальность_врача"), String.valueOf(rs.getInt("Кабинет")),String.valueOf(rs.getInt("Карта_пациента")),dateFormat.format(rs.getTimestamp("Дата_приема")),  timeFormat.format(rs.getTimestamp("Время_приема")), String.valueOf(rs.getBoolean("Отметка"))};
+                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО_врача"),rs.getString("Специальность_врача"), String.valueOf(rs.getInt("Кабинет")),String.valueOf(rs.getInt("Карта_пациента")),dateFormat.format(rs.getDate("Дата_приема")),  timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка"))};
                             model5.addRow(rowData);
                         }
                         table5.setModel(model5);
@@ -876,7 +876,7 @@ public class Main {
                     int mk = Integer.parseInt(tf055.getText());  // Получаем номер карты
                     Date dt = Date.valueOf(tf056.getText());  // Получаем Дата приема
                     Time time = Time.valueOf(tf057.getText());  // Получаем время приема
-                    int otmetka = Integer.parseInt(tf058.getText());  // Получаем Отметка
+                    boolean otmetka = Boolean.parseBoolean(tf058.getText());  // Получаем Отметка
 
                     statement.setInt(1, (int) id);// Установка значения № карты для вставки
                     statement.setString(2, (String) fio);// Установка значения фио
@@ -885,9 +885,9 @@ public class Main {
                     statement.setInt(5, (int) mk);// Установка значения номер карты
                     statement.setDate(6, new java.sql.Date(dt.getTime()));// Установка значения дата приема
                     statement.setTime(7, new java.sql.Time(time.getTime()));// Установка значения время приема
-                    statement.setInt(8, (int) otmetka);// Установка значения отметка
+                    statement.setBoolean(8, (boolean) otmetka);// Установка значения отметка
 
-                    model5.addRow(new Object[]{id, fio, spec,cab, mk, dt, time, cab}); // добавление новой строки в таблицу
+                    model5.addRow(new Object[]{id, fio, spec,cab, mk, dt, time, otmetka}); // добавление новой строки в таблицу
                     statement.executeUpdate();// обновление таблицы в postgre
                     statement.close();
                     connection.close();
@@ -900,29 +900,31 @@ public class Main {
 // Удаление строки таблицы Расписание врачей
         del05.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int i05 = table4.getSelectedRow();// Номер выделенной строки
+                int i05 = table5.getSelectedRow();// Номер выделенной строки
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса delete (на удаление)
-                    String sql = "DELETE FROM Расписание_врачей WHERE id_врача=? AND ФИО=? AND Специальность=? AND Начало_работы=? AND Конец_работы=? AND Кабинет=?";
+                    String sql = "DELETE FROM Записи_пациентов WHERE id_врача=? AND ФИО_врача=? AND Специальность_врача=? AND Кабинет=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? AND Отметка=?";
                     PreparedStatement statement = connection.prepareStatement(sql);
                     int id = Integer.parseInt(model5.getValueAt(i05, 0).toString());// Получаем id удаляемой записи
                     String fio = (String) model5.getValueAt(i05, 1); // Получаем фио
                     String spec = (String) model5.getValueAt(i05, 2); // Получаем специальность
-                    String dateBegin = (String) model5.getValueAt(i05, 3); // Получаем начало работы
-                    Date dt1 = Date.valueOf(dateBegin); // Преобразуем строку в объект типа java.sql.Date
-                    String dateEnd = (String) model5.getValueAt(i05, 4); // Получаем конец работы
-                    Date dt2 = Date.valueOf(dateEnd); // Преобразуем строку в объект типа java.sql.Date
-                    int cab = Integer.parseInt(model5.getValueAt(i05, 5).toString());// Получаем кабинет
+                    int cab = Integer.parseInt(model5.getValueAt(i05, 3).toString());// кабинет
+                    int mk = Integer.parseInt(model5.getValueAt(i05, 4).toString());// номер карты
+                    String d = (String) model5.getValueAt(i05, 5); // Получаем дату приема
+                    Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
+                    String t= (String) model5.getValueAt(i05, 6); // Получаем время приема
+                    Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
+                    boolean otmetka = Boolean.parseBoolean(model5.getValueAt(i05, 7).toString());// отметка
 
                     statement.setInt(1, (int) id);// Установка значения id для удаления
                     statement.setString(2, (String) fio);// Установка значения фио
                     statement.setString(3, (String) spec);// Установка значения специальности
-                    statement.setDate(4, dt1);// Установка значения начало работы
-                    statement.setDate(5, dt2);// Установка значения конец работы
-                    statement.setInt(6, (int) cab);// Установка значения специальности
-                    statement.setDate(7, dt2);// Установка значения конец работы
-                    statement.setInt(8, (int) cab);// Установка значения специальности
+                    statement.setInt(4,(int) cab);// Установка значения кабинета
+                    statement.setInt(5, (int)mk);// Установка значения медкарта
+                    statement.setDate(6, date);// Установка значения даты
+                    statement.setTime(7, time);// Установка значения время
+                    statement.setBoolean(8, (boolean) otmetka);// Установка отметки
 
                     statement.executeUpdate();// обновление таблицы в postgre
                     model5.removeRow(i05);// Удаление строки из модели таблицы
