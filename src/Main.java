@@ -962,6 +962,142 @@ public class Main {
                 });
             }
         });
+        // выводит таблицу пациенты
+        m041.addActionListener(new ActionListener() {
+            boolean resultDisplayed = false; // переменная-флаг
+            @Override
+            public void actionPerformed (ActionEvent a){
+                SwingUtilities.invokeLater(() -> {
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel1, panel2, panel3, panel4};
+                    JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                    JTable[] tables = {table1, table2, table3, table4};
+                    for (JPanel p : panels) { // закрытие панелей
+                        p.setVisible(false);
+                        frame.getContentPane().remove(p);
+                    }
+                    for (JTextArea t : textAreas) { // удаление текстового поля
+                        frame.getContentPane().remove(t);}
+                    for (JTable t : tables) { // удаление таблиц
+                        frame.getContentPane().remove(t);}
+                    panel02.setVisible(true);
+                    table2.setVisible(true);
+                    frame.getContentPane().add(BorderLayout.SOUTH, panel02);
+                    frame.getContentPane().add(BorderLayout.CENTER, table2);
+                    panel02.add(lb021);//номер карты
+                    panel02.add(tf021);
+                    panel02.add(lb022);// ФИО
+                    panel02.add(tf022);
+                    panel02.add(lb023);// полис
+                    panel02.add(tf023);
+                    panel02.add(add02);//добавить
+                    panel02.add(del02);//удалить
+                    frame.revalidate();
+                    frame.repaint();//Обновление компонентов фрейма
+                });
+                if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                    try {
+                        Connection connection = getConnection(); //открытие соединения с базой данных
+                        Statement statement = connection.createStatement(); // оператор запроса
+                        ResultSet rs = statement.executeQuery("SELECT * FROM Пациенты ORDER BY Номер_карты;");// Сортировка по ФИО
+                        Object[] row = new Object[3];
+                        model2.addColumn("Номер_карты");
+                        model2.addColumn("ФИО");
+                        model2.addColumn("Полис");
+                        model2.addRow(new Object[]{"<html><b>Номер карты</b></html>","<html><b>ФИО пациента</b></html>", "<html><b>Полис</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        while (rs.next()) { // пока есть данные
+                            String[] rowData = {String.valueOf(rs.getInt("Номер_карты")), rs.getString("ФИО"), String.valueOf(rs.getInt("Полис"))};
+                            model2.addRow(rowData);
+                        }
+                        table2.setModel(model2);
+                        statement.close();
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    resultDisplayed = true; // установка значения переменной-флага
+                }
+            }
+        });
+        //добавление строки в таблице Пациенты
+        add04.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Connection connection = getConnection();
+                    // Создание SQL-запроса INSERT (добавление)
+                    String sql = "INSERT INTO Пациенты (Номер_карты, ФИО, Полис) VALUES (?, ?, ?)";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+
+                    int mk = Integer.parseInt(tf021.getText());// Получаем № карты из JTextField
+                    String fio_pac = tf022.getText();  // Получаем фио
+                    int polis = Integer.parseInt(tf023.getText());  // Получаем полис
+
+                    statement.setInt(1, (int) mk);// Установка значения № карты для вставки
+                    statement.setString(2, (String) fio_pac);// Установка значения фио
+                    statement.setInt(3, (int) polis);// Установка значения Полис
+
+                    model2.addRow(new Object[]{mk, fio_pac, polis}); // добавление новой строки в таблицу
+                    statement.executeUpdate();// обновление таблицы в postgre
+                    statement.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        // Удаление строки таблицы Пациенты
+        del04.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int i02 = table2.getSelectedRow();// Номер выделенной строки
+                try {
+                    Connection connection = getConnection();
+                    // Создание SQL-запроса delete (на удаление)
+                    String sql = "DELETE FROM Пациенты WHERE Номер_карты=? AND ФИО=? AND Полис=?";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    int mk = Integer.parseInt(model2.getValueAt(i02, 0).toString());// Получаем id удаляемой записи
+                    String fio = (String) model2.getValueAt(i02, 1); // Получаем фио
+                    int polis = Integer.parseInt(model2.getValueAt(i02, 2).toString());// Получаем полис
+
+                    statement.setInt(1, (int) mk);// Установка значения id для удаления
+                    statement.setString(2, (String) fio);// Установка значения фио
+                    statement.setInt(3, (int) polis);// Установка значения специальности
+
+                    statement.executeUpdate();// обновление таблицы в postgre
+                    model2.removeRow(i02);// Удаление строки из модели таблицы
+                    model2.fireTableDataChanged(); // Обновление модели таблицы
+                    statement.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        m042.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent a) {
+                SwingUtilities.invokeLater(() -> {
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel1, panel2, panel3, panel4};
+                    JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                    JTable[] tables = {table1, table2, table3, table4};
+                    for (JPanel p : panels) { // закрытие панелей
+                        p.setVisible(false);
+                        frame.getContentPane().remove(p);
+                    }
+                    for (JTextArea tt : textAreas) { // удаление текстового поля
+                        frame.getContentPane().remove(tt);
+                    }
+                    for (JTable t : tables) { // удаление таблиц
+                        frame.getContentPane().remove(t);
+                    }
+                    panel.setVisible(true);
+                    ta.setVisible(true);
+                    frame.getContentPane().add(BorderLayout.SOUTH, panel);
+                    frame.getContentPane().add(BorderLayout.CENTER, ta);
+                    frame.revalidate();
+                    frame.repaint();//Обновление компонентов фрейма
+                });
+            }
+        });
 
         //1) Ведомость регистратуры для разноса мед.карт по кабнетам на день
         // выводит ведомость на сегодняшний день
