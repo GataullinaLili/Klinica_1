@@ -69,6 +69,8 @@ public class KlinicaGui {
         frame.getContentPane().add(BorderLayout.CENTER, panels.get(0).getComponent(0));// Текстовая область по центру
         frame.setVisible(true);
 
+        //одлждэр.нсшжжмгшжгщж.м
+
 
     }
 }
