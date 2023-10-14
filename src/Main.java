@@ -116,6 +116,96 @@ public class Main {
         panel04.setVisible(false);
 
 
+        // добавление компонентов (задание 3)
+        JLabel lb1 = new JLabel("Введите месяц");
+        JTextField tf1 = new JTextField(2); // принимает до 2 символов
+        JLabel lb2 = new JLabel("год");
+        JTextField tf2 = new JTextField(4); // принимает до 4 символов
+        JLabel lb3 = new JLabel("ФИО врача");
+        JTextField tf3 = new JTextField(20); // принимает до 20 символов
+        JButton bt31 = new JButton("Поиск");
+
+        // Создание текстовых областей
+        JTextArea ta = new JTextArea();
+        JTextArea ta1 = new JTextArea();
+        JTextArea ta2 = new JTextArea();
+        JTextArea ta3 = new JTextArea();
+        JTextArea ta4 = new JTextArea();
+        // Добавление текстовой области в панель
+        panel.add(ta);
+        panel1.add(ta1);
+        panel2.add(ta2);
+        panel3.add(ta3);
+        panel4.add(ta4);
+
+        // Добавление компонентов в рамку.
+        frame.getContentPane().add(BorderLayout.NORTH, mb);
+        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        frame.getContentPane().add(BorderLayout.CENTER, ta);// Текстовая область по центру
+        frame.setVisible(true);
+
+        // Создание таблицы для таблицы врачи
+        DefaultTableModel model1 = new DefaultTableModel();
+        JTable table1 = new JTable(model1);
+        table1.setSelectionBackground(Color.pink);
+        // добавление компонентов (таблица врачи)
+        JLabel lb011 = new JLabel("Добавить врача: id");
+        JTextField tf011 = new JTextField(5); // id принимает до 5 символов
+        JLabel lb012 = new JLabel("ФИО");
+        JTextField tf012 = new JTextField(40); // фио принимает до 40 символов
+        JLabel lb013 = new JLabel("Специальность");
+        JTextField tf013 = new JTextField(20); // специальность принимает до 20 символов
+        JButton add01 = new JButton("Добавить");
+        JButton del01 = new JButton("Удалить");
+
+        // Создание таблицы пациенты
+        DefaultTableModel model2 = new DefaultTableModel();
+        JTable table2 = new JTable(model2);
+        table2.setSelectionBackground(Color.pink);// выделение строки розовым
+        // добавление компонентов (таблица пациенты)
+        JLabel lb021 = new JLabel("Добавить пациента: Номер карты");
+        JTextField tf021 = new JTextField(5); // номер карты принимает до 5 символов
+        JLabel lb022 = new JLabel("ФИО");
+        JTextField tf022 = new JTextField(40); // фио принимает до 40 символов
+        JLabel lb023 = new JLabel("Полис");
+        JTextField tf023 = new JTextField(16); // полис до 16 символов
+        JButton add02 = new JButton("Добавить");
+        JButton del02 = new JButton("Удалить");
+
+        // Создание таблицы кабинеты
+        DefaultTableModel model3 = new DefaultTableModel();
+        JTable table3 = new JTable(model3);
+        table3.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблица пациенты)
+        JLabel lb031 = new JLabel("№ Кабинета");
+        JTextField tf031 = new JTextField(3); // номер кабинета до 3 символов
+        JButton add03 = new JButton("Добавить");
+        JButton del03 = new JButton("Удалить");
+
+        // Создание таблицы расписание врачей
+        DefaultTableModel model4 = new DefaultTableModel();
+        JTable table4 = new JTable(model4);
+        table4.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблица Расписание врачей)
+        JLabel lb041 = new JLabel("Добавить расписание врача: id врача");
+        JTextField tf041 = new JTextField(5); // id врача принимает до 5 символов
+        JLabel lb042 = new JLabel("ФИО");
+        JTextField tf042 = new JTextField(40); // фио принимает до 40 символов
+        JLabel lb043 = new JLabel("Специальность");
+        JTextField tf043 = new JTextField(20); // специальность до 20 символов
+        JLabel lb044 = new JLabel("Начало работы");
+        JTextField tf044 = new JTextField(14);
+        JLabel lb045 = new JLabel("Конец работы");
+        JTextField tf045 = new JTextField(14);
+        JLabel lb046 = new JLabel("Кабинет");
+        JTextField tf046 = new JTextField(3); // кабинет до 3 символов
+        JButton add04 = new JButton("Добавить");
+        JButton del04 = new JButton("Удалить");
+
+        // Создание таблицы записи пациентов
+        DefaultTableModel model5 = new DefaultTableModel();
+        JTable table5 = new JTable(model5);
+        table5.setSelectionBackground(Color.pink);// выделение строки
 
         // выводит врачей
         m011.addActionListener(new ActionListener() {
@@ -123,7 +213,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel1, panel2, panel3, panel4};
+                    JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                    JTable[] tables = {table1, table2, table3, table4, table5};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
