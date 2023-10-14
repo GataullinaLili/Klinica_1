@@ -70,7 +70,6 @@ public class KlinicaGui {
         frame.setVisible(true);
 
         //одлждэр.нсшжжмгшжгщж.м
-        //уыеквнгшщзгщижтюрж
 
 
     }
