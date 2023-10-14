@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
-
 public class Main {
     // Метод для подключения к базе данных
     private static Connection getConnection() throws SQLException {
