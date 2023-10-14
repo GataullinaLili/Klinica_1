@@ -43,6 +43,7 @@ public class Main {
         JMenu m03 = new JMenu("Список кабинетов");
         JMenu m04 = new JMenu("Расписание врачей");
         JMenu m05 = new JMenu("Записи пациентов");
+        JMenu m06 = new JMenu("Приемы пациентов");
         JMenu m1 = new JMenu("Ведомость регистратуры"); // задание 1
         JMenu m2 = new JMenu("Расписание работы врачей");// задание 2 (m04)
         JMenu m3 = new JMenu("Ведомость приема врача");// задание 3
@@ -53,6 +54,7 @@ public class Main {
         mb.add(m03);
         mb.add(m04);
         mb.add(m05);
+        mb.add(m06);
         mb.add(m1);
         mb.add(m2);
         mb.add(m3);
@@ -77,6 +79,10 @@ public class Main {
         m05.add(m051);
         JMenuItem m052 = new JMenuItem("Закрыть");
         m05.add(m052);
+        JMenuItem m061 = new JMenuItem("Открыть");
+        m06.add(m061);
+        JMenuItem m062 = new JMenuItem("Закрыть");
+        m06.add(m062);
         JMenuItem m11 = new JMenuItem("Открыть");
         m1.add(m11);
         JMenuItem m21 = new JMenuItem("Открыть");
@@ -105,6 +111,7 @@ public class Main {
         JPanel panel03 = new JPanel();
         JPanel panel04 = new JPanel();
         JPanel panel05 = new JPanel();
+        JPanel panel06 = new JPanel();
         // Видимость панелей
         panel.setVisible(true);
         panel1.setVisible(false);
@@ -116,7 +123,8 @@ public class Main {
         panel03.setVisible(false);
         panel04.setVisible(false);
         panel05.setVisible(false);
-        panel05.setPreferredSize(new Dimension(1000, 80));
+        panel06.setVisible(false);
+        panel05.setPreferredSize(new Dimension(1000, 80));// размер панели
 
         // добавление компонентов (задание 3)
         JLabel lb1 = new JLabel("Введите месяц");
@@ -225,6 +233,26 @@ public class Main {
         JCheckBox tf058 = new JCheckBox();
         JButton add05 = new JButton("Добавить");
         JButton del05 = new JButton("Удалить");
+
+        // Создание таблицы Приемы
+        DefaultTableModel model6 = new DefaultTableModel();
+        JTable table6 = new JTable(model6);
+        table6.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблицы Приемы)
+        JLabel lb061 = new JLabel("id врача");
+        JTextField tf061 = new JTextField(5); // id врача принимает до 5 символов
+        JLabel lb062 = new JLabel("ФИО");
+        JTextField tf062 = new JTextField(30); // фио принимает до 30 символов
+        JLabel lb063 = new JLabel("Специальность");
+        JTextField tf063 = new JTextField(20); // специальность до 20 символов
+        JLabel lb064 = new JLabel("Начало работы");
+        JTextField tf064 = new JTextField(8);
+        JLabel lb065 = new JLabel("Конец работы");
+        JTextField tf065 = new JTextField(8);
+        JLabel lb066 = new JLabel("Кабинет");
+        JTextField tf066 = new JTextField(3); // кабинет до 3 символов
+        JButton add06 = new JButton("Добавить");
+        JButton del06 = new JButton("Удалить");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");// формат для даты
 
@@ -792,7 +820,7 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel05,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
                     JTable[] tables = {table1, table2, table3, table4, table5};
                     for (JPanel p : panels) { // закрытие панелей
@@ -962,8 +990,8 @@ public class Main {
                 });
             }
         });
-        // выводит таблицу пациенты
-        m041.addActionListener(new ActionListener() {
+        // выводит таблицу Приемы
+        m061.addActionListener(new ActionListener() {
             boolean resultDisplayed = false; // переменная-флаг
             @Override
             public void actionPerformed (ActionEvent a){
@@ -1019,7 +1047,7 @@ public class Main {
             }
         });
         //добавление строки в таблице Пациенты
-        add04.addActionListener(new ActionListener() {
+        add06.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Connection connection = getConnection();
@@ -1046,7 +1074,7 @@ public class Main {
         });
 
         // Удаление строки таблицы Пациенты
-        del04.addActionListener(new ActionListener() {
+        del06.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int i02 = table2.getSelectedRow();// Номер выделенной строки
                 try {
@@ -1072,7 +1100,7 @@ public class Main {
                 }
             }
         });
-        m042.addActionListener(new ActionListener() {
+        m062.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
