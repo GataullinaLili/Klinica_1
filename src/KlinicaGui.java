@@ -35,5 +35,13 @@ public class KlinicaGui {
              ) {
             mb.add(menuItem);
         }
+
+        //создание панелей
+        ArrayList<JPanel> panels = new ArrayList<>();
+        for (int i = 0; i == 9; i++){
+            panels.add(new JPanel());
+        }
+
+
     }
 }
