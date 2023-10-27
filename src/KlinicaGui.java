@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class KlinicaGui {
@@ -52,12 +53,12 @@ public class KlinicaGui {
         labels_Ex3.add(new JLabel("год"));  //lb2
         labels_Ex3.add(new JLabel("ФИО врача"));  //lb3
         ArrayList<JTextField> textfields = new ArrayList<>();
-        textfields.add(new JTextField(2));  //tf1;  значение "месяц" до 2 символов
-        textfields.add(new JTextField(4));  //tf2;  значение "год" до 4 символов
-        textfields.add(new JTextField(20));  //tf3;  ФИО врача до 20 символов
+        textfields.add(new JTextField(2));  //tf1; значение "месяц" до 2 символов
+        textfields.add(new JTextField(4));  //tf2; значение "год" до 4 символов
+        textfields.add(new JTextField(20));  //tf3; ФИО врача до 20 символов
         JButton searchButton = new JButton("Поиск");  //bt31
 
-        // Создание текстовых областей
+        // Создание текстовой области в каждой панели
         for (int i = 0; i < 5; i++){
             panels.get(i).add(new JTextArea());
         }
@@ -79,8 +80,8 @@ public class KlinicaGui {
         labelsDoctors.add(new JLabel("ФИО"));  //lb012
         labelsDoctors.add(new JLabel("Специальность"));  //lb013
         ArrayList<JTextField> textFieldsDoctors = new ArrayList<>();
-        textFieldsDoctors.add(new JTextField(5));  //tf011;  i++++++++++++++d до 5 символов
-        textFieldsDoctors.add(new JTextField(30));  //tf012;  фио врача до 30 символов
+        textFieldsDoctors.add(new JTextField(5));  //tf011; id до 5 символов
+        textFieldsDoctors.add(new JTextField(30));  //tf012; фио врача до 30 символов
         textFieldsDoctors.add(new JTextField(20));  //tf013; специальность до 20 символов
         JButton addDoctor = new JButton("Добавить");  // add01
         JButton delDoctor = new JButton("Удалить");  // del01
@@ -93,16 +94,78 @@ public class KlinicaGui {
         ArrayList<JLabel> labelsPatients = new ArrayList<>();
         labelsPatients.add(new JLabel("Добавить пациента: Номер карты"));  //lb021
         labelsPatients.add(new JLabel("ФИО"));  //lb022
-        labelsPatients.add(new JLabel("Дата рождения"));  //lb023
+        labelsPatients.add(new JLabel("Дата рождения"));  //lb023 !!АХТУНГ!! не хватает текстового поля
+        labelsPatients.add(new JLabel("Полис"));
+        ArrayList<JTextField> textFieldsPatients = new ArrayList<>();
+        textFieldsPatients.add(new JTextField(5));  //tf021; номер карты принимает до 5 символов
+        textFieldsPatients.add(new JTextField(30));  //tf022; фио принимает до 30 символов
+        textFieldsPatients.add(new JTextField(10));  //дата рождения
+        textFieldsPatients.add(new JTextField(8));  //tf023; полис до 8 символов  !!АХТУНГ!! не хватает лейбла
+        JButton addPatient = new JButton("Добавить");
+        JButton delPatient = new JButton("Удалить");
 
-        // добавление компонентов (таблица "пациенты")
-        JLabel lb021 = new JLabel("Добавить пациента: Номер карты");
-        JTextField tf021 = new JTextField(5); // номер карты принимает до 5 символов
-        JLabel lb022 = new JLabel("ФИО");
-        JTextField tf022 = new JTextField(30); // фио принимает до 30 символов
-        JLabel lb023 = new JLabel("Дата рождения");
-        JTextField tf023 = new JTextField(8); // полис до 8 символов
-        JButton add02 = new JButton("Добавить");
-        JButton del02 = new JButton("Удалить");
+        //КАБИНЕТЫ
+        // Создание таблицы "кабинеты"
+        DefaultTableModel modelCabinet = new DefaultTableModel();  //model3
+        JTable tableCabinet = new JTable(modelCabinet);  //table3
+        tableCabinet.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблица "кабинеты")
+        JLabel labelCabinet = new JLabel("№ Кабинета");  //lb031
+        JTextField textFieldCabinet = new JTextField(3); // tf031; номер кабинета до 3 символов
+        JButton addCabinet = new JButton("Добавить");  //add03
+        JButton delCabinet = new JButton("Удалить");  //del03
+
+        //РАСПИСАНИЕ ВРАЧЕЙ
+        // Создание таблицы расписание врачей
+        DefaultTableModel modelSchedule = new DefaultTableModel();  //model4
+        JTable tableSchedule = new JTable(modelSchedule);  //table4
+        tableSchedule.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблица Расписание врачей)
+        ArrayList<JLabel> labelsSchedule = new ArrayList<>();
+        labelsSchedule.add(new JLabel("id врача"));  //lb041
+        labelsSchedule.add(new JLabel("ФИО"));  //lb042
+        labelsSchedule.add(new JLabel("Специальность"));  //lb043
+        labelsSchedule.add(new JLabel("Начало работы"));  //lb044
+        labelsSchedule.add(new JLabel("Конец работы"));  //lb045
+        labelsSchedule.add(new JLabel("Кабинет"));  //lb046
+        ArrayList<JTextField> textFieldsSchedule = new ArrayList<>();
+        textFieldsSchedule.add(new JTextField(5));  //tf041
+        textFieldsSchedule.add(new JTextField(30));  //tf042
+        textFieldsSchedule.add(new JTextField(20));  //tf043
+        textFieldsSchedule.add(new JTextField(8));  //tf044
+        textFieldsSchedule.add(new JTextField(8));  //tf045
+        textFieldsSchedule.add(new JTextField(3));  //tf046
+        JButton add04 = new JButton("Добавить");
+        JButton del04 = new JButton("Удалить");
+
+        //ЗАПИСЬ НА ПРИЕМ
+        // Создание таблицы записи пациентов
+        DefaultTableModel modelAppointments = new DefaultTableModel();  //model5
+        JTable tableAppointments = new JTable(modelAppointments);  //table5
+        tableAppointments.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблица Записи пациентов)
+        ArrayList<JLabel> labelsAppointments = new ArrayList<>();
+        labelsAppointments.add(new JLabel("ID врача"));  //lb051
+        labelsAppointments.add(new JLabel("ФИО врача"));  //lb052
+        labelsAppointments.add(new JLabel("Специальность врача"));  //lb053
+        labelsAppointments.add(new JLabel("Кабинет"));  //lb054
+        labelsAppointments.add(new JLabel("№ карты пациента"));  //lb055
+        labelsAppointments.add(new JLabel("Дата приема"));  //lb056
+        labelsAppointments.add(new JLabel("Время приема"));  //lb057
+        labelsAppointments.add(new JLabel("Отметка о посещении"));  //lb058
+        ArrayList<JTextField> textFieldsAppointments = new ArrayList<>();
+        textFieldsAppointments.add(new JTextField(5));  //tf051
+        textFieldsAppointments.add(new JTextField(30));  //tf052
+        textFieldsAppointments.add(new JTextField(20));  //tf053
+        textFieldsAppointments.add(new JTextField(3));  //tf054
+        textFieldsAppointments.add(new JTextField(10));  //tf055
+        textFieldsAppointments.add(new JTextField(8));  //tf056
+        textFieldsAppointments.add(new JTextField(6));  //tf057
+        JCheckBox textFieldsAppointments_Checkbox = new JCheckBox();  //tf058
+        JButton addAppointment = new JButton("Добавить");  //add05
+        JButton delAppointment = new JButton("Удалить");  //del05
+
+        // формат для даты
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 }
