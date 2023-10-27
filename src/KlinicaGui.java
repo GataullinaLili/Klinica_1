@@ -10,23 +10,23 @@ public class KlinicaGui {
         frame.setSize(1400, 700);// Размеры
         frame.setLocationRelativeTo(null); // установить JFrame в центре экрана
 
-        //элементы панели меню
+        //элементы панели меню; в комментах указаны старые названия полей
         ArrayList<JMenu> menuItems = new ArrayList<>();
-        menuItems.add(new JMenu("Список врачей"));
-        menuItems.add(new JMenu("Список пациентов"));
-        menuItems.add(new JMenu("Список кабинетов"));
-        menuItems.add(new JMenu("Расписание врачей"));
-        menuItems.add(new JMenu("Записи пациентов"));
-        menuItems.add(new JMenu("Ведомость регистратуры"));
-        menuItems.add(new JMenu("Расписание работы врачей"));
-        menuItems.add(new JMenu("Ведомость приема врача"));
-        menuItems.add(new JMenu("Часто ходит по врачам"));
+        menuItems.add(new JMenu("Список врачей"));  //m01
+        menuItems.add(new JMenu("Список пациентов"));  //m02
+        menuItems.add(new JMenu("Список кабинетов"));  //m03
+        menuItems.add(new JMenu("Расписание врачей"));  //m04
+        menuItems.add(new JMenu("Записи пациентов"));  //m05
+        menuItems.add(new JMenu("Ведомость регистратуры"));  //m1
+        menuItems.add(new JMenu("Расписание работы врачей"));  //m2
+        menuItems.add(new JMenu("Ведомость приема врача"));  //m3
+        menuItems.add(new JMenu("Часто ходит по врачам"));  //m4
         
         //добавление открыть-закрыть к каждому из элементов меню
         for (JMenu menuItem : menuItems
              ) {
-            menuItem.add(new JMenuItem("открыть"));
-            menuItem.add(new JMenuItem("закрыть"));
+            menuItem.add(new JMenuItem("открыть"));  //m..1
+            menuItem.add(new JMenuItem("закрыть"));  //m..2
         }
 
         //создание панели меню с элементами
@@ -39,9 +39,6 @@ public class KlinicaGui {
 
         //создание панелей
         ArrayList<JPanel> panels = new ArrayList<>();
-        for (int i = 0; i == 9; i++){
-            panels.add(new JPanel());
-        }
 
         //скрытие панелей кроме первой
         panels.get(0).setVisible(true);
@@ -51,13 +48,15 @@ public class KlinicaGui {
 
         // добавление компонентов
         // в (задание 3)
-        JLabel lb1 = new JLabel("Введите месяц");
-        JTextField tf1 = new JTextField(2); // принимает до 2 символов
-        JLabel lb2 = new JLabel("год");
-        JTextField tf2 = new JTextField(4); // принимает до 4 символов
-        JLabel lb3 = new JLabel("ФИО врача");
-        JTextField tf3 = new JTextField(20); // принимает до 20 символов
-        JButton bt31 = new JButton("Поиск");
+        ArrayList<JLabel> labels = new ArrayList<>();
+        labels.add(new JLabel("Введите месяц"));  //lb1
+        labels.add(new JLabel("год"));  //lb2
+        labels.add(new JLabel("ФИО врача"));  //lb3
+        ArrayList<JTextField> textfields = new ArrayList<>();
+        textfields.add(new JTextField(2));  //tf1
+        textfields.add(new JTextField(4));  //tf2
+        textfields.add(new JTextField(20));  //tf3
+        JButton searchButton = new JButton("Поиск");  //bt31
 
         // Создание текстовых областей
         for (int i = 0; i < 5; i++){
@@ -74,6 +73,7 @@ public class KlinicaGui {
         DefaultTableModel model1 = new DefaultTableModel();
         JTable table1 = new JTable(model1);
         table1.setSelectionBackground(Color.pink);
+
         // добавление компонентов (таблица "врачи")
         JLabel lb011 = new JLabel("Добавить врача: id");
         JTextField tf011 = new JTextField(5); // id принимает до 5 символов
@@ -83,5 +83,6 @@ public class KlinicaGui {
         JTextField tf013 = new JTextField(20); // специальность принимает до 20 символов
         JButton add01 = new JButton("Добавить");
         JButton del01 = new JButton("Удалить");
+
     }
 }
