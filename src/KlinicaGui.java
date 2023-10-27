@@ -1,6 +1,12 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -26,8 +32,8 @@ public class KlinicaGui {
         //добавление открыть-закрыть к каждому из элементов меню
         for (JMenu menuItem : menuItems
              ) {
-            menuItem.add(new JMenuItem("открыть"));  //m..1
-            menuItem.add(new JMenuItem("закрыть"));  //m..2
+            menuItem.add(new JMenuItem("открыть"));  //m011, m021, m031, m041, m051, m11, m21, m31, m41
+            menuItem.add(new JMenuItem("закрыть"));  //m012, m022, m032, m042, m052, m12, m22, m32, m42
         }
 
         //создание панели меню с элементами
@@ -59,8 +65,10 @@ public class KlinicaGui {
         JButton searchButton = new JButton("Поиск");  //bt31
 
         // Создание текстовой области в каждой панели
+        ArrayList<JTextArea> textAreas = new ArrayList<>();
         for (int i = 0; i < 5; i++){
-            panels.get(i).add(new JTextArea());
+            textAreas.add(new JTextArea());
+            panels.get(i).add(textAreas.get(i));
         }
 
         // Добавление компонентов в рамку.
@@ -135,8 +143,8 @@ public class KlinicaGui {
         textFieldsSchedule.add(new JTextField(8));  //tf044
         textFieldsSchedule.add(new JTextField(8));  //tf045
         textFieldsSchedule.add(new JTextField(3));  //tf046
-        JButton add04 = new JButton("Добавить");
-        JButton del04 = new JButton("Удалить");
+        JButton addSchedule = new JButton("Добавить");  //add04
+        JButton delSchedule = new JButton("Удалить");  //del04
 
         //ЗАПИСЬ НА ПРИЕМ
         // Создание таблицы записи пациентов
@@ -167,5 +175,63 @@ public class KlinicaGui {
 
         // формат для даты
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        //ВЫВОД ВРАЧЕЙ
+        menuItems.get(0).addActionListener(new ActionListener() {
+            boolean resultDisplayed = false; // переменная-флаг
+            @Override
+            public void actionPerformed (ActionEvent a){
+                SwingUtilities.invokeLater(() -> {
+                    //JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    //JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                    JTable[] tables = {tableDoctors, tablePatients, tableCabinet, tableSchedule, tableAppointments};
+                    for (JPanel p : panels) { // закрытие панелей
+                        p.setVisible(false);
+                        frame.getContentPane().remove(p);
+                    }
+                    for (JTextArea tt : textAreas) { // удаление текстового поля
+                        frame.getContentPane().remove(tt);
+                    }
+                    for (JTable t : tables) { // удаление таблиц
+                        frame.getContentPane().remove(t);
+                    }
+                    panels.get(1).setVisible(true);
+                    frame.getContentPane().add(BorderLayout.SOUTH, panels.get(1));
+                    frame.getContentPane().add(BorderLayout.CENTER, table1);
+                    panels.get(0).add(lb011);//id врача
+                    panels.get(0).add(tf011);
+                    panels.get(0).add(lb012);// ФИО
+                    panels.get(0).add(tf012);
+                    panels.get(0).add(lb013);// Специальность
+                    panels.get(0).add(tf013);
+                    panels.get(0).add(addDoctor);//добавить
+                    panels.get(0).add(delDoctor);//удалить
+                    frame.revalidate();
+                    frame.repaint();//Обновление компонентов фрейма
+                });
+                if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                    try {
+                        Connection connection = getConnection(); //открытие соединения с базой данных
+                        Statement statement = connection.createStatement(); // оператор запроса
+                        ResultSet rs = statement.executeQuery("SELECT * FROM Врачи ORDER BY ФИО;");// Сортировка по ФИО
+                        Object[] row = new Object[3];
+                        model1.addColumn("id");
+                        model1.addColumn("ФИО");
+                        model1.addColumn("Специальность");
+                        model1.addRow(new Object[]{"<html><b>id</b></html>", "<html><b>ФИО</b></html>", "<html><b>Специальнсоть</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        while (rs.next()) { // пока есть данные
+                            String[] rowData = {String.valueOf(rs.getInt("id")), rs.getString("ФИО"), rs.getString("Специальность")};
+                            model1.addRow(rowData);
+                        }
+                        table1.setModel(model1);
+                        statement.close();
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    resultDisplayed = true; // установка значения переменной-флага
+                }
+            }
+        });
     }
 }
