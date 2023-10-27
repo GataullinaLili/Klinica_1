@@ -30,11 +30,11 @@ public class KlinicaGui {
         }
 
         //создание панели меню с элементами
-        JMenuBar mb = new JMenuBar();
-        mb.setBackground(new Color(255, 242, 229));  // Установка цвета текста панели
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(new Color(255, 242, 229));  // Установка цвета текста панели
         for (JMenu menuItem : menuItems
              ) {
-            mb.add(menuItem);
+            menuBar.add(menuItem);
         }
 
         //создание панелей
@@ -48,14 +48,14 @@ public class KlinicaGui {
 
         // добавление компонентов
         // в (задание 3)
-        ArrayList<JLabel> labels = new ArrayList<>();
-        labels.add(new JLabel("Введите месяц"));  //lb1
-        labels.add(new JLabel("год"));  //lb2
-        labels.add(new JLabel("ФИО врача"));  //lb3
+        ArrayList<JLabel> labels_Ex3 = new ArrayList<>();
+        labels_Ex3.add(new JLabel("Введите месяц"));  //lb1
+        labels_Ex3.add(new JLabel("год"));  //lb2
+        labels_Ex3.add(new JLabel("ФИО врача"));  //lb3
         ArrayList<JTextField> textfields = new ArrayList<>();
-        textfields.add(new JTextField(2));  //tf1
-        textfields.add(new JTextField(4));  //tf2
-        textfields.add(new JTextField(20));  //tf3
+        textfields.add(new JTextField(2));  //tf1;  значение "месяц" до 2 символов
+        textfields.add(new JTextField(4));  //tf2;  значение "год" до 4 символов
+        textfields.add(new JTextField(20));  //tf3;  ФИО врача до 20 символов
         JButton searchButton = new JButton("Поиск");  //bt31
 
         // Создание текстовых областей
@@ -70,17 +70,20 @@ public class KlinicaGui {
         frame.setVisible(true);
 
         // Создание таблицы "врачи"
-        DefaultTableModel model1 = new DefaultTableModel();
-        JTable table1 = new JTable(model1);
-        table1.setSelectionBackground(Color.pink);
+        DefaultTableModel modelDoctors = new DefaultTableModel();  //model1
+        JTable tableDoctors = new JTable(modelDoctors);  //table1
+        tableDoctors.setSelectionBackground(Color.pink);
 
         // добавление компонентов (таблица "врачи")
-        JLabel lb011 = new JLabel("Добавить врача: id");
-        JTextField tf011 = new JTextField(5); // id принимает до 5 символов
-        JLabel lb012 = new JLabel("ФИО");
-        JTextField tf012 = new JTextField(30); // фио принимает до 30 символов
-        JLabel lb013 = new JLabel("Специальность");
-        JTextField tf013 = new JTextField(20); // специальность принимает до 20 символов
+        ArrayList<JLabel> labelsDoctors = new ArrayList<>();
+        labelsDoctors.add(new JLabel("Добавить врача: id"));  //lb011
+        labelsDoctors.add(new JLabel("ФИО"));  //lb012
+        labelsDoctors.add(new JLabel("Специальность"));  //lb013
+        ArrayList<JTextField> textFieldsDoctors = new ArrayList<>();
+        textFieldsDoctors.add(new JTextField(5));  //tf011;  id до 5 символов
+        textFieldsDoctors.add(new JTextField(30));  //tf012;  фио до 30 символов
+        textFieldsDoctors.add(new JTextField(20));  //tf013; специальность до 20 символов
+
         JButton add01 = new JButton("Добавить");
         JButton del01 = new JButton("Удалить");
 
