@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -69,8 +70,18 @@ public class KlinicaGui {
         frame.getContentPane().add(BorderLayout.CENTER, panels.get(0).getComponent(0));// Текстовая область по центру
         frame.setVisible(true);
 
-        //одлждэр.нсшжжмгшжгщж.м
-
-
+        // Создание таблицы "врачи"
+        DefaultTableModel model1 = new DefaultTableModel();
+        JTable table1 = new JTable(model1);
+        table1.setSelectionBackground(Color.pink);
+        // добавление компонентов (таблица "врачи")
+        JLabel lb011 = new JLabel("Добавить врача: id");
+        JTextField tf011 = new JTextField(5); // id принимает до 5 символов
+        JLabel lb012 = new JLabel("ФИО");
+        JTextField tf012 = new JTextField(30); // фио принимает до 30 символов
+        JLabel lb013 = new JLabel("Специальность");
+        JTextField tf013 = new JTextField(20); // специальность принимает до 20 символов
+        JButton add01 = new JButton("Добавить");
+        JButton del01 = new JButton("Удалить");
     }
 }
