@@ -211,6 +211,7 @@ public class KlinicaGui {
                 });
                 if (!resultDisplayed) { // проверка, что результат еще не был выведен
                     try {
+                        //тут нужна бд?
                         Connection connection = getConnection(); //открытие соединения с базой данных
                         Statement statement = connection.createStatement(); // оператор запроса
                         ResultSet rs = statement.executeQuery("SELECT * FROM Врачи ORDER BY ФИО;");// Сортировка по ФИО
