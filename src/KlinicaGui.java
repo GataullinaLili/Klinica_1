@@ -1,15 +1,15 @@
+import java.sql.*;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
+import java.sql.Date;
 public class KlinicaGui {
     public void Gui(){
         JFrame frame = new JFrame("Клиника");
@@ -197,13 +197,13 @@ public class KlinicaGui {
                     }
                     panels.get(1).setVisible(true);
                     frame.getContentPane().add(BorderLayout.SOUTH, panels.get(1));
-                    frame.getContentPane().add(BorderLayout.CENTER, table1);
-                    panels.get(0).add(lb011);//id врача
-                    panels.get(0).add(tf011);
-                    panels.get(0).add(lb012);// ФИО
-                    panels.get(0).add(tf012);
-                    panels.get(0).add(lb013);// Специальность
-                    panels.get(0).add(tf013);
+                    frame.getContentPane().add(BorderLayout.CENTER, tableDoctors);
+                    panels.get(0).add(labelsDoctors.get(0));//id врача
+                    panels.get(0).add(textFieldsDoctors.get(0));
+                    panels.get(0).add(labelsDoctors.get(1));// ФИО врача
+                    panels.get(0).add(textFieldsDoctors.get(1));
+                    panels.get(0).add(labelsDoctors.get(2));// Специальность
+                    panels.get(0).add(textFieldsDoctors.get(2));
                     panels.get(0).add(addDoctor);//добавить
                     panels.get(0).add(delDoctor);//удалить
                     frame.revalidate();
@@ -215,15 +215,15 @@ public class KlinicaGui {
                         Statement statement = connection.createStatement(); // оператор запроса
                         ResultSet rs = statement.executeQuery("SELECT * FROM Врачи ORDER BY ФИО;");// Сортировка по ФИО
                         Object[] row = new Object[3];
-                        model1.addColumn("id");
-                        model1.addColumn("ФИО");
-                        model1.addColumn("Специальность");
-                        model1.addRow(new Object[]{"<html><b>id</b></html>", "<html><b>ФИО</b></html>", "<html><b>Специальнсоть</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        modelDoctors.addColumn("id");
+                        modelDoctors.addColumn("ФИО");
+                        modelDoctors.addColumn("Специальность");
+                        modelDoctors.addRow(new Object[]{"<html><b>id</b></html>", "<html><b>ФИО</b></html>", "<html><b>Специальнсоть</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                         while (rs.next()) { // пока есть данные
                             String[] rowData = {String.valueOf(rs.getInt("id")), rs.getString("ФИО"), rs.getString("Специальность")};
-                            model1.addRow(rowData);
+                            modelDoctors.addRow(rowData);
                         }
-                        table1.setModel(model1);
+                        tableDoctors.setModel(modelDoctors);
                         statement.close();
                         connection.close();
                     } catch (SQLException e) {
