@@ -43,6 +43,7 @@ public class Main {
         JMenu m03 = new JMenu("Список кабинетов");
         JMenu m04 = new JMenu("Расписание врачей");
         JMenu m05 = new JMenu("Записи пациентов");
+        JMenu m06 = new JMenu("Приемы пациентов");
         JMenu m1 = new JMenu("Ведомость регистратуры"); // задание 1
         JMenu m2 = new JMenu("Расписание работы врачей");// задание 2 (m04)
         JMenu m3 = new JMenu("Ведомость приема врача");// задание 3
@@ -53,6 +54,7 @@ public class Main {
         mb.add(m03);
         mb.add(m04);
         mb.add(m05);
+        mb.add(m06);
         mb.add(m1);
         mb.add(m2);
         mb.add(m3);
@@ -77,6 +79,10 @@ public class Main {
         m05.add(m051);
         JMenuItem m052 = new JMenuItem("Закрыть");
         m05.add(m052);
+        JMenuItem m061 = new JMenuItem("Открыть");
+        m06.add(m061);
+        JMenuItem m062 = new JMenuItem("Закрыть");
+        m06.add(m062);
         JMenuItem m11 = new JMenuItem("Открыть");
         m1.add(m11);
         JMenuItem m21 = new JMenuItem("Открыть");
@@ -105,6 +111,7 @@ public class Main {
         JPanel panel03 = new JPanel();
         JPanel panel04 = new JPanel();
         JPanel panel05 = new JPanel();
+        JPanel panel06 = new JPanel();
         // Видимость панелей
         panel.setVisible(true);
         panel1.setVisible(false);
@@ -116,7 +123,10 @@ public class Main {
         panel03.setVisible(false);
         panel04.setVisible(false);
         panel05.setVisible(false);
-        panel05.setPreferredSize(new Dimension(1000, 80));
+        panel06.setVisible(false);
+        panel04.setPreferredSize(new Dimension(1000, 80));// размер панели
+        panel05.setPreferredSize(new Dimension(1000, 80));// размер панели
+        panel06.setPreferredSize(new Dimension(1000, 80));// размер панели
 
         // добавление компонентов (задание 3)
         JLabel lb1 = new JLabel("Введите месяц");
@@ -144,7 +154,7 @@ public class Main {
         frame.getContentPane().add(BorderLayout.CENTER, ta);// Текстовая область по центру
         frame.setVisible(true);
 
-        // Создание таблицы для таблицы врачи
+        // Создание таблицы для таблицы врачи (1)
         DefaultTableModel model1 = new DefaultTableModel();
         JTable table1 = new JTable(model1);
         table1.setSelectionBackground(Color.pink);
@@ -157,8 +167,9 @@ public class Main {
         JTextField tf013 = new JTextField(20); // специальность принимает до 20 символов
         JButton add01 = new JButton("Добавить");
         JButton del01 = new JButton("Удалить");
+        JButton update01 = new JButton("Обновить");
 
-        // Создание таблицы пациенты
+        // Создание таблицы пациенты (2)
         DefaultTableModel model2 = new DefaultTableModel();
         JTable table2 = new JTable(model2);
         table2.setSelectionBackground(Color.pink);// выделение строки розовым
@@ -171,38 +182,42 @@ public class Main {
         JTextField tf023 = new JTextField(8); // полис до 8 символов
         JButton add02 = new JButton("Добавить");
         JButton del02 = new JButton("Удалить");
+        JButton update02 = new JButton("Обновить");
 
-        // Создание таблицы кабинеты
+        // Создание таблицы Кабинеты (3)
         DefaultTableModel model3 = new DefaultTableModel();
         JTable table3 = new JTable(model3);
         table3.setSelectionBackground(Color.pink);// выделение строки
         // добавление компонентов (таблица пациенты)
-        JLabel lb031 = new JLabel("№ Кабинета");
-        JTextField tf031 = new JTextField(3); // номер кабинета до 3 символов
+        JLabel lb031 = new JLabel("№ кабинета");
+        JTextField tf031 = new JTextField(3); // номер кабинета до 5 символов
+        JLabel lb032 = new JLabel("Этаж");
+        JTextField tf032 = new JTextField(2); // этаж до 2 символов
         JButton add03 = new JButton("Добавить");
         JButton del03 = new JButton("Удалить");
+        JButton update03 = new JButton("Обновить");
 
-        // Создание таблицы расписание врачей
+        // Создание таблицы расписание врачей (4)
         DefaultTableModel model4 = new DefaultTableModel();
         JTable table4 = new JTable(model4);
         table4.setSelectionBackground(Color.pink);// выделение строки
         // добавление компонентов (таблица Расписание врачей)
         JLabel lb041 = new JLabel("id врача");
-        JTextField tf041 = new JTextField(5); // id врача принимает до 5 символов
+        JTextField tf041 = new JTextField(10); // id врача принимает до 5 символов
         JLabel lb042 = new JLabel("ФИО");
         JTextField tf042 = new JTextField(30); // фио принимает до 30 символов
         JLabel lb043 = new JLabel("Специальность");
         JTextField tf043 = new JTextField(20); // специальность до 20 символов
         JLabel lb044 = new JLabel("Начало работы");
-        JTextField tf044 = new JTextField(8);
+        JTextField tf044 = new JTextField(10);
         JLabel lb045 = new JLabel("Конец работы");
-        JTextField tf045 = new JTextField(8);
-        JLabel lb046 = new JLabel("Кабинет");
-        JTextField tf046 = new JTextField(3); // кабинет до 3 символов
+        JTextField tf045 = new JTextField(10);
+        JLabel lb046 = new JLabel("Номер кабинета");
+        JTextField tf046 = new JTextField(3); // Номер_кабинета до 3 символов
         JButton add04 = new JButton("Добавить");
         JButton del04 = new JButton("Удалить");
 
-        // Создание таблицы записи пациентов
+        // Создание таблицы записи пациентов (5)
         DefaultTableModel model5 = new DefaultTableModel();
         JTable table5 = new JTable(model5);
         table5.setSelectionBackground(Color.pink);// выделение строки
@@ -213,18 +228,42 @@ public class Main {
         JTextField tf052 = new JTextField(30); // фио принимает до 30 символов
         JLabel lb053 = new JLabel("Специальность врача");
         JTextField tf053 = new JTextField(20); // специальность до 20 символов
-        JLabel lb054 = new JLabel("Кабинет");
+        JLabel lb054 = new JLabel("Номер кабинета");
         JTextField tf054 = new JTextField(3);
         JLabel lb055 = new JLabel("№ карты пациента");
         JTextField tf055 = new JTextField(10);
         JLabel lb056 = new JLabel("Дата приема");
-        JTextField tf056 = new JTextField(8);
+        JTextField tf056 = new JTextField(10);
         JLabel lb057 = new JLabel("Время приема");
-        JTextField tf057 = new JTextField(6);
+        JTextField tf057 = new JTextField(10);
         JLabel lb058 = new JLabel("Отметка о посещении");
         JCheckBox tf058 = new JCheckBox();
         JButton add05 = new JButton("Добавить");
         JButton del05 = new JButton("Удалить");
+
+        // Создание таблицы Прием (6)
+        DefaultTableModel model6 = new DefaultTableModel();
+        JTable table6 = new JTable(model6);
+        table5.setSelectionBackground(Color.pink);// выделение строки
+        // добавление компонентов (таблица Записи пациентов)
+        JLabel lb061 = new JLabel("ID врача");
+        JTextField tf061 = new JTextField(5); // id врача принимает до 5 символов
+        JLabel lb062 = new JLabel("ФИО врача");
+        JTextField tf062 = new JTextField(30); // фио принимает до 30 символов
+        JLabel lb063 = new JLabel("Специальность врача");
+        JTextField tf063 = new JTextField(20); // специальность до 20 символов
+        JLabel lb064 = new JLabel("Номер_кабинета");
+        JTextField tf064 = new JTextField(3);
+        JLabel lb065 = new JLabel("№ карты пациента");
+        JTextField tf065 = new JTextField(10);
+        JLabel lb066 = new JLabel("Дата приема");
+        JTextField tf066 = new JTextField(10);
+        JLabel lb067 = new JLabel("Время приема");
+        JTextField tf067 = new JTextField(6);
+        JLabel lb068 = new JLabel("Отметка о посещении");
+        JCheckBox tf068 = new JCheckBox();
+        JButton add06 = new JButton("Добавить");
+        JButton del06 = new JButton("Удалить");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");// формат для даты
 
@@ -234,9 +273,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -311,8 +350,7 @@ public class Main {
                 }
             }
         });
-
-        // Удаление строки таблицы Врачи
+// Удаление строки таблицы Врачи
         del01.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int i01 = table1.getSelectedRow();// Номер выделенной строки
@@ -343,9 +381,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -372,9 +410,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -404,7 +442,7 @@ public class Main {
                     try {
                         Connection connection = getConnection(); //открытие соединения с базой данных
                         Statement statement = connection.createStatement(); // оператор запроса
-                        ResultSet rs = statement.executeQuery("SELECT * FROM Пациенты ORDER BY Номер_карты;");// Сортировка по ФИО
+                        ResultSet rs = statement.executeQuery("SELECT * FROM Пациенты ORDER BY Номер_карты;");// Сортировка по номеру карты
                         Object[] row = new Object[3];
                         model2.addColumn("Номер_карты");
                         model2.addColumn("ФИО");
@@ -482,9 +520,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -510,9 +548,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -526,8 +564,10 @@ public class Main {
                     panel03.setVisible(true);
                     frame.getContentPane().add(BorderLayout.SOUTH, panel03);
                     frame.getContentPane().add(BorderLayout.CENTER, table3);
-                    panel03.add(lb031);//кабинет
+                    panel03.add(lb031);//Номер_кабинета
                     panel03.add(tf031);
+                    panel03.add(lb032);//этаж
+                    panel03.add(tf032);
                     panel03.add(add03);//добавить
                     panel03.add(del03);//удалить
                     frame.revalidate();
@@ -537,12 +577,13 @@ public class Main {
                     try {
                         Connection connection = getConnection(); //открытие соединения с базой данных
                         Statement statement = connection.createStatement(); // оператор запроса
-                        ResultSet rs = statement.executeQuery("SELECT * FROM Кабинеты ORDER BY Кабинет;");// Сортировка по кабинетам
+                        ResultSet rs = statement.executeQuery("SELECT * FROM Кабинеты ORDER BY Номер_кабинета;");// Сортировка по Номер_кабинета
                         Object[] row = new Object[1];
-                        model3.addColumn("Кабинет");
-                        model3.addRow(new Object[]{ "<html><b>№ кабинета</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        model3.addColumn("Номер_кабинета");
+                        model3.addColumn("Этаж");
+                        model3.addRow(new Object[]{ "<html><b>№ кабинета</b></html>","<html><b>Этаж</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                         while (rs.next()) { // пока есть данные
-                            String[] rowData = {String.valueOf(rs.getInt("Кабинет"))};
+                            String[] rowData = {String.valueOf(rs.getInt("Номер_кабинета")), String.valueOf(rs.getInt("Этаж"))};
                             model3.addRow(rowData);
                         }
                         table3.setModel(model3);
@@ -555,18 +596,19 @@ public class Main {
                 }
             }
         });
-        //добавление строки в таблице Кабинеты
+        //добавление строки в таблице Номер_кабинетаы
         add03.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса INSERT (добавление)
-                    String sql = "INSERT INTO Кабинеты (Кабинет) VALUES (?)";
+                    String sql = "INSERT INTO Кабинеты (Номер_кабинета, Этаж) VALUES (?, ?)";
                     PreparedStatement statement = connection.prepareStatement(sql);
-
-                    int cab = Integer.parseInt(tf031.getText());// Получаем кабинет из JTextField
+                    int cab = Integer.parseInt(tf031.getText());// Получаем Номер_кабинета из JTextField
                     statement.setInt(1, (int) cab);// Установка значения id для вставки
-                    model3.addRow(new Object[]{cab}); // добавление новой строки в таблицу
+                    int level = Integer.parseInt(tf032.getText());// Получаем Номер_кабинета из JTextField
+                    statement.setInt(2, (int) level);// Установка значения id для вставки
+                    model3.addRow(new Object[]{cab, level}); // добавление новой строки в таблицу
                     statement.executeUpdate();// обновление таблицы в postgre
                     statement.close();
                     connection.close();
@@ -576,17 +618,19 @@ public class Main {
             }
         });
 
-        // Удаление строки таблицы Кабинеты
+        // Удаление строки таблицы Номер_кабинетаы
         del03.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int i03 = table3.getSelectedRow();// Номер выделенной строки
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса delete (на удаление)
-                    String sql = "DELETE FROM Кабинеты WHERE Кабинет=?";
+                    String sql = "DELETE FROM Кабинеты WHERE Номер_кабинета=? AND Этаж=?";
                     PreparedStatement statement = connection.prepareStatement(sql);
-                    int cab = Integer.parseInt(model3.getValueAt(i03, 0).toString());// Получаем id удаляемой записи
+                    int cab = Integer.parseInt(model3.getValueAt(i03, 0).toString());// Получаем Номер_кабинета удаляемой записи
+                    int level = Integer.parseInt(model3.getValueAt(i03, 1).toString());// Получаем этаж удаляемой записи
                     statement.setInt(1, (int) cab);// Установка значения кабинета для удаления
+                    statement.setInt(2, (int) level);// Установка значения этаж для удаления
                     statement.executeUpdate();// обновление таблицы в postgre
                     statement.close();
                     connection.close();
@@ -597,13 +641,13 @@ public class Main {
                 model3.fireTableDataChanged(); // Обновление модели таблицы
             }
         });
-        m032.addActionListener(new ActionListener() { // закрыть таблицу Кабинеты
+        m032.addActionListener(new ActionListener() { // закрыть таблицу Номер_кабинетаы
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -629,9 +673,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -656,7 +700,7 @@ public class Main {
                     panel04.add(tf044);
                     panel04.add(lb045);// конец работы
                     panel04.add(tf045);
-                    panel04.add(lb046);// кабинет
+                    panel04.add(lb046);// Номер_кабинета
                     panel04.add(tf046);
                     panel04.add(add04);//добавить
                     panel04.add(del04);//удалить
@@ -674,11 +718,11 @@ public class Main {
                         model4.addColumn("Специальность");
                         model4.addColumn("Начало_работы");
                         model4.addColumn("Конец_работы");
-                        model4.addColumn("Кабинет");
-                        model4.addRow(new Object[]{"<html><b>ID врача</b></html>","<html><b>ФИО</b></html>","<html><b>Специальность</b></html>","<html><b>Начало_работы</b></html>", "<html><b>Конец_работы</b></html>","<html><b>Кабинет</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        model4.addColumn("Номер_кабинета");
+                        model4.addRow(new Object[]{"<html><b>ID врача</b></html>","<html><b>ФИО</b></html>","<html><b>Специальность</b></html>","<html><b>Начало_работы</b></html>", "<html><b>Конец_работы</b></html>","<html><b>Номер кабинета</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                         SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         while (rs.next()) { // пока есть данные
-                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО"),rs.getString("Специальность"), timestampFormat.format(rs.getTimestamp("Начало_работы")),  timestampFormat.format(rs.getTimestamp("Конец_работы")), String.valueOf(rs.getInt("Кабинет"))};
+                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО"),rs.getString("Специальность"), timestampFormat.format(rs.getTimestamp("Начало_работы")),  timestampFormat.format(rs.getTimestamp("Конец_работы")), String.valueOf(rs.getInt("Номер_кабинета"))};
                             model4.addRow(rowData);
                         }
                         table4.setModel(model4);
@@ -697,7 +741,7 @@ public class Main {
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса INSERT (добавление)
-                    String sql = "INSERT INTO Расписание_врачей (id_врача, ФИО, Специальность, Начало_работы, Конец_работы, Кабинет) VALUES (?,?,?,?, ?, ?)";
+                    String sql = "INSERT INTO Расписание_врачей (id_врача, ФИО, Специальность, Начало_работы, Конец_работы, Номер_кабинета) VALUES (?,?,?,?, ?, ?)";
                     PreparedStatement statement = connection.prepareStatement(sql);
 
                     int id = Integer.parseInt(tf041.getText());// Получаем id из JTextField
@@ -705,14 +749,14 @@ public class Main {
                     String spec = tf043.getText();  // Получаем специальность
                     Timestamp dt1 = Timestamp.valueOf(tf044.getText());  // Получаем Начало работы
                     Timestamp dt2 = Timestamp.valueOf(tf045.getText());  // Получаем Конец_работы
-                    int cab = Integer.parseInt(tf046.getText());  // Получаем кабинет
+                    int cab = Integer.parseInt(tf046.getText());  // Получаем Номер_кабинета
 
                     statement.setInt(1, (int) id);// Установка значения № карты для вставки
                     statement.setString(2, (String) fio);// Установка значения фио
                     statement.setString(3, (String) spec);// Установка значения специальность
                     statement.setTimestamp(4, new java.sql.Timestamp(dt1.getTime()));// Установка значения начало_работы
                     statement.setTimestamp(5, new java.sql.Timestamp(dt2.getTime()));// Установка значения конец_работы
-                    statement.setInt(6, (int) cab);// Установка значения кабинет
+                    statement.setInt(6, (int) cab);// Установка значения Номер_кабинета
 
 
                     model4.addRow(new Object[]{id, fio, spec, dt1, dt2, cab}); // добавление новой строки в таблицу
@@ -732,7 +776,7 @@ public class Main {
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса delete (на удаление)
-                    String sql = "DELETE FROM Расписание_врачей WHERE id_врача=? AND ФИО=? AND Специальность=? AND Начало_работы=? AND Конец_работы=? AND Кабинет=?";
+                    String sql = "DELETE FROM Расписание_врачей WHERE id_врача=? AND ФИО=? AND Специальность=? AND Начало_работы=? AND Конец_работы=? AND Номер_кабинета=?";
                     PreparedStatement statement = connection.prepareStatement(sql);
                     int id = Integer.parseInt(model4.getValueAt(i04, 0).toString());// Получаем id удаляемой записи
                     String fio = (String) model4.getValueAt(i04, 1); // Получаем фио
@@ -741,7 +785,7 @@ public class Main {
                     Date dt1 = Date.valueOf(dateBegin); // Преобразуем строку в объект типа java.sql.Date
                     String dateEnd = (String) model4.getValueAt(i04, 4); // Получаем конец работы
                     Date dt2 = Date.valueOf(dateEnd); // Преобразуем строку в объект типа java.sql.Date
-                    int cab = Integer.parseInt(model4.getValueAt(i04, 5).toString());// Получаем кабинет
+                    int cab = Integer.parseInt(model4.getValueAt(i04, 5).toString());// Получаем Номер_кабинета
 
                     statement.setInt(1, (int) id);// Установка значения id для удаления
                     statement.setString(2, (String) fio);// Установка значения фио
@@ -764,9 +808,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -792,9 +836,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel05,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -815,7 +859,7 @@ public class Main {
                     panel05.add(tf052);
                     panel05.add(lb053);// специальность
                     panel05.add(tf053);
-                    panel05.add(lb054);//кабинет
+                    panel05.add(lb054);//Номер_кабинета
                     panel05.add(tf054);
                     panel05.add(lb055);// номер карты
                     panel05.add(tf055);
@@ -837,17 +881,17 @@ public class Main {
                         ResultSet rs = statement.executeQuery("SELECT * FROM Записи_пациентов ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
                         Object[] row = new Object[8];
                         model5.addColumn("id_врача");
-                        model5.addColumn("ФИО");
-                        model5.addColumn("Специальность");
-                        model5.addColumn("Кабинет");
+                        model5.addColumn("ФИО_врача");
+                        model5.addColumn("Специальность_врача");
+                        model5.addColumn("Номер_кабинета");
                         model5.addColumn("Номер_карты");
                         model5.addColumn("Дата_приема");
                         model5.addColumn("Время_приема");
                         model5.addColumn("Отметка");
-                        model5.addRow(new Object[]{"<html><b>ID врача</b></html>","<html><b>ФИО врача</b></html>","<html><b>Специальность</b></html>","<html><b>Кабинет</b></html>","<html><b>Номер карты пациента</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>","<html><b>Отметка</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        model5.addRow(new Object[]{"<html><b>ID врача</b></html>","<html><b>ФИО врача</b></html>","<html><b>Специальность</b></html>","<html><b>Номер_кабинета</b></html>","<html><b>Номер карты пациента</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>","<html><b>Отметка</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                         while (rs.next()) { // пока есть данные
-                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО_врача"),rs.getString("Специальность_врача"), String.valueOf(rs.getInt("Кабинет")),String.valueOf(rs.getInt("Карта_пациента")),dateFormat.format(rs.getDate("Дата_приема")),  timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка"))};
+                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО_врача"),rs.getString("Специальность_врача"), String.valueOf(rs.getInt("Номер_кабинета")),String.valueOf(rs.getInt("Карта_пациента")),dateFormat.format(rs.getDate("Дата_приема")),  timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка"))};
                             model5.addRow(rowData);
                         }
                         table5.setModel(model5);
@@ -866,13 +910,13 @@ public class Main {
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса INSERT (добавление)
-                    String sql = "INSERT INTO Записи_пациентов (id_врача, ФИО_врача, Специальность_врача, Кабинет, Карта_пациента, Дата_приема, Время_приема,Отметка) VALUES (?,?,?,?,?,?,?,?)";
+                    String sql = "INSERT INTO Записи_пациентов (id_врача, ФИО_врача, Специальность_врача, Номер_кабинета, Карта_пациента, Дата_приема, Время_приема,Отметка) VALUES (?,?,?,?,?,?,?,?)";
                     PreparedStatement statement = connection.prepareStatement(sql);
 
                     int id = Integer.parseInt(tf051.getText());// Получаем id из JTextField
                     String fio = tf052.getText();  // Получаем фио
                     String spec = tf053.getText();  // Получаем специальность
-                    int cab = Integer.parseInt(tf054.getText());  // Получаем кабинет
+                    int cab = Integer.parseInt(tf054.getText());  // Получаем Номер_кабинета
                     int mk = Integer.parseInt(tf055.getText());  // Получаем номер карты
                     Date dt = Date.valueOf(tf056.getText());  // Получаем Дата приема
                     Time time = Time.valueOf(tf057.getText());  // Получаем время приема
@@ -881,7 +925,7 @@ public class Main {
                     statement.setInt(1, (int) id);// Установка значения № карты для вставки
                     statement.setString(2, (String) fio);// Установка значения фио
                     statement.setString(3, (String) spec);// Установка значения специальность
-                    statement.setInt(4, (int) cab);// Установка значения кабинет
+                    statement.setInt(4, (int) cab);// Установка значения Номер_кабинета
                     statement.setInt(5, (int) mk);// Установка значения номер карты
                     statement.setDate(6, new java.sql.Date(dt.getTime()));// Установка значения дата приема
                     statement.setTime(7, new java.sql.Time(time.getTime()));// Установка значения время приема
@@ -904,12 +948,12 @@ public class Main {
                 try {
                     Connection connection = getConnection();
                     // Создание SQL-запроса delete (на удаление)
-                    String sql = "DELETE FROM Записи_пациентов WHERE id_врача=? AND ФИО_врача=? AND Специальность_врача=? AND Кабинет=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? AND Отметка=?";
+                    String sql = "DELETE FROM Записи_пациентов WHERE id_врача=? AND ФИО_врача=? AND Специальность_врача=? AND Номер_кабинета=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? AND Отметка=?";
                     PreparedStatement statement = connection.prepareStatement(sql);
                     int id = Integer.parseInt(model5.getValueAt(i05, 0).toString());// Получаем id удаляемой записи
                     String fio = (String) model5.getValueAt(i05, 1); // Получаем фио
                     String spec = (String) model5.getValueAt(i05, 2); // Получаем специальность
-                    int cab = Integer.parseInt(model5.getValueAt(i05, 3).toString());// кабинет
+                    int cab = Integer.parseInt(model5.getValueAt(i05, 3).toString());// Номер_кабинета
                     int mk = Integer.parseInt(model5.getValueAt(i05, 4).toString());// номер карты
                     String d = (String) model5.getValueAt(i05, 5); // Получаем дату приема
                     Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
@@ -920,7 +964,7 @@ public class Main {
                     statement.setInt(1, (int) id);// Установка значения id для удаления
                     statement.setString(2, (String) fio);// Установка значения фио
                     statement.setString(3, (String) spec);// Установка значения специальности
-                    statement.setInt(4,(int) cab);// Установка значения кабинета
+                    statement.setInt(4,(int) cab);// Установка значения Номер_кабинетаа
                     statement.setInt(5, (int)mk);// Установка значения медкарта
                     statement.setDate(6, date);// Установка значения даты
                     statement.setTime(7, time);// Установка значения время
@@ -940,9 +984,185 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel05,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                    for (JPanel p : panels) { // закрытие панелей
+                        p.setVisible(false);
+                        frame.getContentPane().remove(p);
+                    }
+                    for (JTextArea tt : textAreas) { // удаление текстового поля
+                        frame.getContentPane().remove(tt);
+                    }
+                    for (JTable t : tables) { // удаление таблиц
+                        frame.getContentPane().remove(t);
+                    }
+                    panel.setVisible(true);
+                    ta.setVisible(true);
+                    frame.getContentPane().add(BorderLayout.SOUTH, panel);
+                    frame.getContentPane().add(BorderLayout.CENTER, ta);
+                    frame.revalidate();
+                    frame.repaint();//Обновление компонентов фрейма
+                });
+            }
+        });
+        // Таблица "Прием"
+        m061.addActionListener(new ActionListener() {
+            boolean resultDisplayed = false; // переменная-флаг
+            @Override
+            public void actionPerformed (ActionEvent a){
+                SwingUtilities.invokeLater(() -> {
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
+                    JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                    for (JPanel p : panels) { // закрытие панелей
+                        p.setVisible(false);
+                        frame.getContentPane().remove(p);
+                    }
+                    for (JTextArea tt : textAreas) { // удаление текстового поля
+                        frame.getContentPane().remove(tt);
+                    }
+                    for (JTable t : tables) { // удаление таблиц
+                        frame.getContentPane().remove(t);
+                    }
+                    panel06.setVisible(true);
+                    table6.setVisible(true);
+                    frame.getContentPane().add(BorderLayout.SOUTH, panel06);
+                    frame.getContentPane().add(BorderLayout.CENTER, table6);
+                    panel06.add(lb061);//id_врача
+                    panel06.add(tf061);
+                    panel06.add(lb062);// ФИО врача
+                    panel06.add(tf062);
+                    panel06.add(lb063);// специальность
+                    panel06.add(tf063);
+                    panel06.add(lb064);// номер_карты
+                    panel06.add(tf064);
+                    panel06.add(lb065);// дата приема
+                    panel06.add(tf065);
+                    panel06.add(lb066);// время приема
+                    panel06.add(tf066);
+                    panel06.add(lb067);// заключение
+                    panel06.add(tf067);
+                    panel06.add(lb068);// рекомендации
+                    panel06.add(tf068);
+                    panel06.add(add06);//добавить
+                    panel06.add(del06);//удалить
+                    frame.revalidate();
+                    frame.repaint();//Обновление компонентов фрейма
+                });
+                if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                    try {
+                        Connection connection = getConnection(); //открытие соединения с базой данных
+                        Statement statement = connection.createStatement(); // оператор запроса
+                        ResultSet rs = statement.executeQuery("SELECT * FROM Прием ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
+                        Object[] row = new Object[8];
+                        model6.addColumn("id_врача");
+                        model6.addColumn("ФИО_врача");
+                        model6.addColumn("Специальность");
+                        model6.addColumn("Карта_пациента");
+                        model6.addColumn("Дата_приема");
+                        model6.addColumn("Время_приема");
+                        model6.addColumn("Заключение");
+                        model6.addColumn("Рекомендации");
+                        model6.addRow(new Object[]{"<html><b>ID врача</b></html>","<html><b>ФИО врача</b></html>","<html><b>Специальность</b></html>","<html><b>Номер карты пациента</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>","<html><b>Заключение</b></html>","<html><b>Рекомендации</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                        while (rs.next()) { // пока есть данные
+                            String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО_врача"),rs.getString("Специальность_врача"), String.valueOf(rs.getInt("Карта_пациента")),dateFormat.format(rs.getDate("Дата_приема")),  timeFormat.format(rs.getTime("Время_приема")), rs.getString("Заключение"), rs.getString("Рекомендации")};
+                            model6.addRow(rowData);
+                        }
+                        table6.setModel(model6);
+                        statement.close();
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    resultDisplayed = true; // установка значения переменной-флага
+                }
+            }
+        });
+//добавление строки в таблице Расписание врачей
+        add05.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Connection connection = getConnection();
+                    // Создание SQL-запроса INSERT (добавление)
+                    String sql = "INSERT INTO Записи_пациентов (id_врача, ФИО_врача, Специальность_врача, Номер_кабинета, Карта_пациента, Дата_приема, Время_приема,Отметка) VALUES (?,?,?,?,?,?,?,?)";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+
+                    int id = Integer.parseInt(tf051.getText());// Получаем id из JTextField
+                    String fio = tf052.getText();  // Получаем фио
+                    String spec = tf053.getText();  // Получаем специальность
+                    int cab = Integer.parseInt(tf054.getText());  // Получаем Номер_кабинета
+                    int mk = Integer.parseInt(tf055.getText());  // Получаем номер карты
+                    Date dt = Date.valueOf(tf056.getText());  // Получаем Дата приема
+                    Time time = Time.valueOf(tf057.getText());  // Получаем время приема
+                    boolean otmetka = Boolean.parseBoolean(tf058.getText());  // Получаем Отметка
+
+                    statement.setInt(1, (int) id);// Установка значения № карты для вставки
+                    statement.setString(2, (String) fio);// Установка значения фио
+                    statement.setString(3, (String) spec);// Установка значения специальность
+                    statement.setInt(4, (int) cab);// Установка значения Номер_кабинета
+                    statement.setInt(5, (int) mk);// Установка значения номер карты
+                    statement.setDate(6, new java.sql.Date(dt.getTime()));// Установка значения дата приема
+                    statement.setTime(7, new java.sql.Time(time.getTime()));// Установка значения время приема
+                    statement.setBoolean(8, (boolean) otmetka);// Установка значения отметка
+
+                    model5.addRow(new Object[]{id, fio, spec,cab, mk, dt, time, otmetka}); // добавление новой строки в таблицу
+                    statement.executeUpdate();// обновление таблицы в postgre
+                    statement.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+// Удаление строки таблицы Расписание врачей
+        del05.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int i05 = table5.getSelectedRow();// Номер выделенной строки
+                try {
+                    Connection connection = getConnection();
+                    // Создание SQL-запроса delete (на удаление)
+                    String sql = "DELETE FROM Записи_пациентов WHERE id_врача=? AND ФИО_врача=? AND Специальность_врача=? AND Номер_кабинета=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? AND Отметка=?";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    int id = Integer.parseInt(model5.getValueAt(i05, 0).toString());// Получаем id удаляемой записи
+                    String fio = (String) model5.getValueAt(i05, 1); // Получаем фио
+                    String spec = (String) model5.getValueAt(i05, 2); // Получаем специальность
+                    int cab = Integer.parseInt(model5.getValueAt(i05, 3).toString());// Номер_кабинета
+                    int mk = Integer.parseInt(model5.getValueAt(i05, 4).toString());// номер карты
+                    String d = (String) model5.getValueAt(i05, 5); // Получаем дату приема
+                    Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
+                    String t= (String) model5.getValueAt(i05, 6); // Получаем время приема
+                    Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
+                    boolean otmetka = Boolean.parseBoolean(model5.getValueAt(i05, 7).toString());// отметка
+
+                    statement.setInt(1, (int) id);// Установка значения id для удаления
+                    statement.setString(2, (String) fio);// Установка значения фио
+                    statement.setString(3, (String) spec);// Установка значения специальности
+                    statement.setInt(4,(int) cab);// Установка значения Номер_кабинетаа
+                    statement.setInt(5, (int)mk);// Установка значения медкарта
+                    statement.setDate(6, date);// Установка значения даты
+                    statement.setTime(7, time);// Установка значения время
+                    statement.setBoolean(8, (boolean) otmetka);// Установка отметки
+
+                    statement.executeUpdate();// обновление таблицы в postgre
+                    model5.removeRow(i05);// Удаление строки из модели таблицы
+                    model5.fireTableDataChanged(); // Обновление модели таблицы
+                    statement.close();
+                    connection.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        m052.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent a) {
+                SwingUtilities.invokeLater(() -> {
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
+                    JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -970,9 +1190,9 @@ public class Main {
             @Override
             public void actionPerformed (ActionEvent a){
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -994,13 +1214,13 @@ public class Main {
                         Connection connection = getConnection(); //открытие соединения с базой данных
                         String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());// текущая дата
                         Statement statement = connection.createStatement(); // оператор запроса
-                        ResultSet rs = statement.executeQuery("SELECT * FROM Записи_пациентов ORDER BY Кабинет;");// Сортировка по каинетам
+                        ResultSet rs = statement.executeQuery("SELECT * FROM Записи_пациентов ORDER BY Номер_кабинета;");// Сортировка по каинетам
                         boolean check1 = false;
                         ta1.append("Ведомость регистратуры для разноса мед.карт по кабнетам на сегодняшний день " + date);
                         while (rs.next()) { // пока есть данные
                             if (date.equals(rs.getString("Дата_приема"))) { // проверка, что дата приема сегодня
                                 ta1.append("\n");
-                                ta1.append("Кабинет №" + rs.getString("Кабинет") + ": ");
+                                ta1.append("Номер_кабинета №" + rs.getString("Номер_кабинета") + ": ");
                                 ta1.append("мед.карта №" + rs.getString("Карта_пациента") + " в ");
                                 ta1.append(rs.getString("Время_приема"));
                                 check1 = true;
@@ -1026,9 +1246,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1055,9 +1275,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1102,9 +1322,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1128,9 +1348,9 @@ public class Main {
         m31.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1204,9 +1424,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1232,9 +1452,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1311,9 +1531,9 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent a) {
                 SwingUtilities.invokeLater(() -> {
-                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel1, panel2, panel3, panel4};
+                    JPanel[] panels = {panel, panel01, panel02, panel03, panel04,panel05, panel06, panel1, panel2, panel3, panel4};
                     JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                    JTable[] tables = {table1, table2, table3, table4, table5};
+                    JTable[] tables = {table1, table2, table3, table4, table5, table6};
                     for (JPanel p : panels) { // закрытие панелей
                         p.setVisible(false);
                         frame.getContentPane().remove(p);
@@ -1336,4 +1556,3 @@ public class Main {
 
     }
 }
-
