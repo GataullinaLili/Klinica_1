@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -10,6 +11,7 @@ import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
+import java.text.DateFormat;
 
 public class Main extends JFrame {
     private String currentUserProfile;
@@ -57,22 +59,22 @@ public class Main extends JFrame {
     private DefaultTableModel model6 = new DefaultTableModel();
     private JTable table6 = new JTable(model6);
     // таблица приемы
+    private JLabel lb0661 = new JLabel("ФИО врача");
+    private JTextField tf0661 = new JTextField(20); // id врача принимает до 5 символов
     private JLabel lb061 = new JLabel("ID врача");
     private JTextField tf061 = new JTextField(5); // id врача принимает до 5 символов
     private JLabel lb062 = new JLabel("№ карты пациента");
     private JTextField tf062 = new JTextField(10);
-    private JLabel lb063 = new JLabel("№ кабинета");
+    private JLabel lb063 = new JLabel("Дата приема");
     private JTextField tf063 = new JTextField(10);
-    private JLabel lb064 = new JLabel("Дата приема");
+    private JLabel lb064 = new JLabel("Время приема");
     private JTextField tf064 = new JTextField(10);
-    private JLabel lb065 = new JLabel("Время приема");
-    private JTextField tf065 = new JTextField(6);
-    private JLabel lb066 = new JLabel("Отметка о посещении");
-    private JCheckBox tf066 = new JCheckBox();
-    private JLabel lb067 = new JLabel("Заключение");
-    private JTextField tf067 = new JTextField(30); // принимает до 30 символов
-    private JLabel lb068 = new JLabel("Рекомендации");
-    private JTextField tf068 = new JTextField(50); // до 50 символов
+    private JLabel lb065 = new JLabel("Отметка о посещении");
+    private JCheckBox tf065 = new JCheckBox();
+    private JLabel lb066 = new JLabel("Заключение");
+    private JTextField tf066 = new JTextField(40); // принимает до 30 символов
+    private JLabel lb067 = new JLabel("Рекомендации");
+    private JTextField tf067 = new JTextField(50); // до 50 символов
     private JButton add06 = new JButton("Добавить");
     private JButton del06 = new JButton("Удалить");
     private JButton update06 = new JButton("Обновить");
@@ -98,7 +100,7 @@ public class Main extends JFrame {
         // Создание каркаса
         super("Клиника");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1500, 700);
+        setSize(1380, 700);
         setLocationRelativeTo(null); //установить JFrame в центре экран
 
         // Создание меню и добавление пунктов
@@ -181,6 +183,10 @@ public class Main extends JFrame {
             m2.add(m22);
             JMenuItem m32 = new JMenuItem("Закрыть");
             m3.add(m32);
+            JMenuItem m061 = new JMenuItem("Открыть");
+            m06.add(m061);
+            JMenuItem m062 = new JMenuItem("Закрыть");
+            m06.add(m062);
             // Видимость панелей
             JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
             for (JPanel p : panels) { // закрытие панелей
@@ -189,7 +195,7 @@ public class Main extends JFrame {
             panel.setVisible(true);
             panel04.setPreferredSize(new Dimension(1000, 80));// размер панели
             panel05.setPreferredSize(new Dimension(1000, 80));// размер панели
-            panel06.setPreferredSize(new Dimension(1000, 80));// размер панели
+            panel06.setPreferredSize(new Dimension(900, 80));// размер панели
             // Добавление текстовой области в панель
             panel.add(ta);
             panel1.add(ta1);
@@ -218,7 +224,7 @@ public class Main extends JFrame {
             table1.setSelectionBackground(Color.pink);
 
             // Таблица "Прием"
-            m06.addActionListener(new ActionListener() {
+            m061.addActionListener(new ActionListener() {
                 boolean resultDisplayed = false; // переменная-флаг
 
                 @Override
@@ -241,11 +247,9 @@ public class Main extends JFrame {
                         table6.setVisible(true);
                         getContentPane().add(BorderLayout.SOUTH, panel06);
                         getContentPane().add(BorderLayout.CENTER, table6);
-                        panel06.add(lb061);//id_врача
-                        panel06.add(tf061);
                         panel06.add(lb062);// номер_карты
                         panel06.add(tf062);
-                        panel06.add(lb063);// номер_кабинета
+                        panel06.add(lb063);
                         panel06.add(tf063);
                         panel06.add(lb064);// дата приема
                         panel06.add(tf064);
@@ -255,8 +259,6 @@ public class Main extends JFrame {
                         panel06.add(tf066);
                         panel06.add(lb067);// заключение
                         panel06.add(tf067);
-                        panel06.add(lb068);// рекомендации
-                        panel06.add(tf068);
                         panel06.add(add06);//добавить
                         panel06.add(del06);//удалить
                         panel06.add(update06);//обновить
@@ -268,25 +270,53 @@ public class Main extends JFrame {
                         try {
                             Connection connection = getConnection(); //открытие соединения с базой данных
                             Statement statement = connection.createStatement(); // оператор запроса
-                            ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
-                            Object[] row = new Object[8];
-                            model6.addColumn("id_врача");
-                            model6.addColumn("Карта_пациента");
-                            model6.addColumn("Номер_кабинета");
-                            model6.addColumn("Дата_приема");
-                            model6.addColumn("Время_приема");
-                            model6.addColumn("Отметка");
-                            model6.addColumn("Заключение");
-                            model6.addColumn("Рекомендации");
-                            model6.addRow(new Object[]{"<html><b>ID врача</b></html>",  "<html><b>Номер карты пациента</b></html>", "<html><b>Номер кабинета</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>", "<html><b>Отметка</b></html>","<html><b>Заключение</b></html>", "<html><b>Рекомендации</b></html>"});//жирный шрифт для 1 строки (название столбцов)
-                            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-                            while (rs.next()) { // пока есть данные
-                                String[] rowData = {String.valueOf(rs.getInt("id_врача")),  String.valueOf(rs.getInt("Карта_пациента")),String.valueOf(rs.getInt("Номер_кабинета")), dateFormat.format(rs.getDate("Дата_приема")), timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка")), rs.getString("Заключение"), rs.getString("Рекомендации")};
-                                model6.addRow(rowData);
+                            ResultSet rs1 = statement.executeQuery("SELECT id_врача FROM Врачи WHERE Логин = '" + result + "'");
+                            int doctorId = -1;
+                            if (rs1.next()) {
+                                doctorId = rs1.getInt("id_врача");
                             }
-                            table6.setModel(model6);
-                            statement.close();
-                            connection.close();
+                            rs1.close();
+
+                            if (doctorId != -1) { // Если id был найден
+                                ResultSet rs = statement.executeQuery("SELECT Прием_пациентов.*, Пациенты.ФИОП " +
+                                        "FROM Прием_пациентов " +
+                                        "JOIN Пациенты ON Прием_пациентов.Карта_пациента = Пациенты.Номер_карты " +
+                                        "WHERE id_врача =" + doctorId +
+                                        "ORDER BY Дата_приема, Время_приема;");// Сортировка
+                                Object[] row = new Object[8];
+                                model6.addColumn("Карта_пациента");
+                                model6.addColumn("ФИОП");
+                                model6.addColumn("Дата_приема");
+                                model6.addColumn("Время_приема");
+                                model6.addColumn("Отметка");
+                                model6.addColumn("Заключение");
+                                model6.addColumn("Рекомендации");
+                                model6.addRow(new Object[]{
+                                        "<html><b>Номер карты</b></html>",
+                                        "<html><b>ФИО пациента</b></html>",
+                                        "<html><b>Дата приема</b></html>",
+                                        "<html><b>Время приема</b></html>",
+                                        "<html><b>Отметка</b></html>",
+                                        "<html><b>Заключение</b></html>",
+                                        "<html><b>Рекомендации</b></html>"
+                                });//жирный шрифт для 1 строки (название столбцов)
+                                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                                while (rs.next()) { // пока есть данные
+                                    String[] rowData = {
+                                            String.valueOf(rs.getInt("Карта_пациента")),
+                                            rs.getString("ФИОП"),
+                                            dateFormat.format(rs.getDate("Дата_приема")),
+                                            timeFormat.format(rs.getTime("Время_приема")),
+                                            String.valueOf(rs.getBoolean("Отметка")),
+                                            rs.getString("Заключение"),
+                                            rs.getString("Рекомендации")
+                                    };
+                                    model6.addRow(rowData);
+                                }
+                                table6.setModel(model6);
+                                statement.close();
+                                connection.close();
+                            }
                         } catch (SQLException e) {
                             e.printStackTrace();
                         }
@@ -294,35 +324,51 @@ public class Main extends JFrame {
                     }
                 }
             });
+
 //добавление строки в таблице прием
             add06.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        Connection connection = getConnection();
-                        // Создание SQL-запроса INSERT (добавление)
-                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Номер_кабинета, Дата_приема, Время_приема, Отметка, Заключение, Рекомендации) VALUES (?,?,?,?,?,?,?,?)";
+                        Connection connection = getConnection(); //открытие соединения с базой данных
+                        Statement statement1 = connection.createStatement(); // оператор запроса
+                        ResultSet rs1 = statement1.executeQuery("SELECT id_врача FROM Врачи WHERE Логин = '" + result + "'");
+                        int doctorId = -1;
+                        if (rs1.next()) {
+                            doctorId = rs1.getInt("id_врача");
+                        }
+                        rs1.close();
+                        statement1.close();
+                        // Получение данных о пациенте по номеру карты
+                        int mk = Integer.parseInt(tf062.getText());
+                        String fio = "";
+                        Statement statement2 = connection.createStatement();
+                        ResultSet rs2 = statement2.executeQuery("SELECT ФИОП FROM Пациенты WHERE Номер_карты = " + mk);
+                        if (rs2.next()) {
+                            fio = rs2.getString("ФИОП");
+                        }
+                        rs2.close();
+                        statement2.close();
+
+                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Дата_приема, Время_приема, Отметка, Заключение, Рекомендации) VALUES (?,?,?,?,?,?,?)";
                         PreparedStatement statement = connection.prepareStatement(sql);
-                        int id = Integer.parseInt(tf061.getText());// Получаем id из JTextField
-                        int mk = Integer.parseInt(tf062.getText());  // Получаем номер карты
-                        int cab = Integer.parseInt(tf063.getText());  // Получаем номер кабинета
-                        Date dt = Date.valueOf(tf064.getText());  // Получаем Дата приема
-                        Time time = Time.valueOf(tf065.getText());  // Получаем время приема
-                        boolean otmetka = Boolean.parseBoolean(tf066.getText());  // Получаем Отметка
-                        String zac = tf067.getText();  // Получаем заключение
-                        String rec = tf068.getText();  // Получаем рекомендации
+                        int id = doctorId;
+                        Date dt = Date.valueOf(tf063.getText());  // Получаем Дата приема
+                        Time time = Time.valueOf(tf064.getText());  // Получаем время приема
+                        boolean otmetka = Boolean.parseBoolean(tf065.getText());  // Получаем Отметка
+                        String zac = tf066.getText();  // Получаем заключение
+                        String rec = tf067.getText();  // Получаем рекомендации
 
 
-                        statement.setInt(1, (int) id);// Установка значения № карты для вставки
+                        statement.setInt(1, (int) id);// Установка значения id
                         statement.setInt(2, (int) mk);// Установка значения номер карты
-                        statement.setInt(3, (int) cab);// Установка значения номер карты
-                        statement.setDate(4, new java.sql.Date(dt.getTime()));// Установка значения дата приема
-                        statement.setTime(5, new java.sql.Time(time.getTime()));// Установка значения время приема
-                        statement.setBoolean(6, (boolean) otmetka);// Установка значения отметка
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка знач рекомендации
+                        statement.setDate(3, new java.sql.Date(dt.getTime()));// Установка значения дата приема
+                        statement.setTime(4, new java.sql.Time(time.getTime()));// Установка значения время приема
+                        statement.setBoolean(5, (boolean) otmetka);// Установка значения отметка
+                        statement.setString(6, (String) zac);// Установка значения заключения
+                        statement.setString(7, (String) rec);// Установка знач рекомендации
 
 
-                        model6.addRow(new Object[]{id, mk,cab, dt, time,otmetka, zac, rec}); // добавление новой строки в таблицу
+                        model6.addRow(new Object[]{mk, fio, dt, time, otmetka, zac, rec}); // добавление новой строки в таблицу
                         statement.executeUpdate();// обновление таблицы в postgre
                         statement.close();
                         connection.close();
@@ -336,28 +382,28 @@ public class Main extends JFrame {
                     int i06 = table6.getSelectedRow();// Номер выделенной строки
                     try {
                         Connection connection = getConnection();
+                        Statement statement1 = connection.createStatement(); // оператор запроса
+                        ResultSet rs1 = statement1.executeQuery("SELECT id_врача FROM Врачи WHERE Логин = '" + result + "'");
+                        int doctorId = -1;
+                        if (rs1.next()) {
+                            doctorId = rs1.getInt("id_врача");
+                        }
+                        rs1.close();
+                        statement1.close();
                         // Создание SQL-запроса delete (на удаление)
-                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Номер_кабинета=? AND Дата_приема=? AND Время_приема=? AND Отметка=? AND Заключение=? AND Рекомендации=? ";
+                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? ";
                         PreparedStatement statement = connection.prepareStatement(sql);
-                        int id = Integer.parseInt(model6.getValueAt(i06, 0).toString());// Получаем id удаляемой записи
-                        int mk = Integer.parseInt(model6.getValueAt(i06, 1).toString());// номер карты
-                        int cab = Integer.parseInt(model6.getValueAt(i06, 2).toString());// номер кабинета
-                        String d = (String) model6.getValueAt(i06, 3); // Получаем дату приема
+                        int id = doctorId;
+                        int mk = Integer.parseInt(model6.getValueAt(i06, 0).toString());//
+                        String d = (String) model6.getValueAt(i06, 2); // Получаем дату приема
                         Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
-                        String t = (String) model6.getValueAt(i06, 4); // Получаем время приема
+                        String t = (String) model6.getValueAt(i06, 3); // Получаем время приема
                         Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
-                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 5).toString());// отметка
-                        String zac = (String) model6.getValueAt(i06, 6); // Получаем заключение
-                        String rec = (String) model6.getValueAt(i06, 7); // Получаем рекомендацию
 
                         statement.setInt(1, (int) id);// Установка значения id для удаления
                         statement.setInt(2, (int) mk);// Установка значения медкарта
-                        statement.setInt(3, (int) cab);// Установка значения кабинета
-                        statement.setDate(4, date);// Установка значения даты
-                        statement.setTime(5, time);// Установка значения время
-                        statement.setBoolean(6, (boolean) otmetka);// Установка отметки
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка значения рекомендации
+                        statement.setDate(3, date);// Установка значения даты
+                        statement.setTime(4, time);// Установка значения время
 
                         statement.executeUpdate();// обновление таблицы в postgres
                         model6.removeRow(i06);// Удаление строки из модели таблицы
@@ -375,31 +421,63 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
 // Создание SQL-запроса update (на обновление данных)
-                        String sql = "UPDATE Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Номер_кабинета=? AND Дата_приема=? AND Время_приема=?";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 5).toString());// отметка
-                        int id = Integer.parseInt(model6.getValueAt(i06, 0).toString());// Получаем id обновляемой записи
-                        int mk = Integer.parseInt(model6.getValueAt(i06, 1).toString());// номер карты
-                        int cab = Integer.parseInt(model6.getValueAt(i06, 2).toString());// номер кабинета
-                        String d = (String) model6.getValueAt(i06, 3); // Получаем дату приема
-                        Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
-                        String t = (String) model6.getValueAt(i06, 4); // Получаем время приема
-                        Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
-                        statement.setBoolean(1, (boolean) otmetka);// Установка отметки
-                        statement.setInt(2, (int) id);// Установка значения id для обновления
-                        statement.setInt(3, (int) mk);// Установка значения медкарта
-                        statement.setInt(4, (int) cab);// Установка значения кабинета
-                        statement.setDate(5, date);// Установка значения даты
-                        statement.setTime(6, time);// Установка значения время
+                        Statement st = connection.createStatement();
+                        ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM Прием_пациентов");
 
-                        statement.executeUpdate();// обновление таблицы в postgres
-                        model6.setValueAt(otmetka, i06, 8);// Обновление значения отметки в модели таблицы
+                        String sql = "UPDATE Прием_пациентов SET Отметка=?, Заключение=?, Рекомендации=? WHERE Карта_пациента=? AND Дата_приема=? AND Время_приема=?";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+
+                            int mk = Integer.parseInt(model6.getValueAt(i06, 0).toString());// номер карты
+                            boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 4).toString());// отметка
+                            String zac = (String) model6.getValueAt(i06, 5); // Получаем заключение
+                            String rec = (String) model6.getValueAt(i06, 6); // Получаем рекомендацию
+                            String d = (String) model6.getValueAt(i06, 2); // Получаем дату приема
+                            Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
+                            String t = (String) model6.getValueAt(i06, 3); // Получаем время приема
+                            Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
+                            statement.clearParameters();
+                            statement.setBoolean(1, (boolean) otmetka);// Установка отметки
+                            statement.setString(2, (String) zac);// Установка значения заключения
+                            statement.setString(3, (String) rec);// Установка значения рекомендации
+                            statement.setInt(4, (int) mk);// Установка значения медкарта
+                            statement.setDate(5, date);// Установка значения даты
+                            statement.setTime(6, time);// Установка значения время
+                            statement.executeUpdate();// обновление таблицы в postgres
+
                         model6.fireTableDataChanged(); // Обновление модели таблицы
                         statement.close();
                         connection.close();
+
                     } catch (SQLException ex) {
+                        System.out.println(ex);
                         ex.printStackTrace();
                     }
+                }
+            });
+            m062.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel.setVisible(true);
+                        ta.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel);
+                        getContentPane().add(BorderLayout.CENTER, ta);
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
                 }
             });
             //1) Ведомость регистратуры для разноса мед.карт по кабинетам на день
@@ -412,7 +490,7 @@ public class Main extends JFrame {
                     SwingUtilities.invokeLater(() -> {
                         JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
                         JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                        JTable[] tables = {table1};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
                         for (JPanel p : panels) { // закрытие панелей
                             p.setVisible(false);
                             getContentPane().remove(p);
@@ -443,15 +521,16 @@ public class Main extends JFrame {
                             rs1.close();
 
                             if (doctorId != -1) { // Если id_врача был найден
-                                ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов WHERE id_врача = " + doctorId + " ORDER BY Время_приема;");// Сортировка по кабинетам
+                                ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов " + "JOIN Пациенты ON Прием_пациентов.Карта_пациента = Пациенты.Номер_карты " + "WHERE id_врача = " + doctorId + " ORDER BY Время_приема;");
                                 boolean check1 = false;
 
-                                ta1.append("Ведомость регистратуры для разноса мед.карт по кабинетам на сегодняшний день " + date);
+                                ta1.append("Список пациентов на сегодняшний день " + date);
                                 while (rs.next()) { // пока есть данные
                                     if (date.equals(rs.getString("Дата_приема"))) { // проверка, что дата приема сегодня
                                         ta1.append("\n");
-                                        ta1.append("Мед.карта №" + rs.getString("Карта_пациента") + " в ");
-                                        ta1.append(rs.getString("Время_приема"));
+                                        ta1.append("Пациент: " + rs.getString("ФИОП")); // добавляем ФИОП пациента
+                                        ta1.append(" с мед.картой №" + rs.getString("Номер_карты") );
+                                        ta1.append(" в " + rs.getString("Время_приема"));
                                         check1 = true;
                                     }
                                 }
@@ -478,7 +557,7 @@ public class Main extends JFrame {
                     SwingUtilities.invokeLater(() -> {
                         JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
                         JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                        JTable[] tables = {table1};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
                         for (JPanel p : panels) { // закрытие панелей
                             p.setVisible(false);
                             getContentPane().remove(p);
@@ -498,7 +577,109 @@ public class Main extends JFrame {
                     });
                 }
             });
+            //2) расписание
+            m21.addActionListener(new ActionListener() {
+                private String formatDate(String inputDate) {
+                    String[] dateArr = inputDate.split("-");
+                    String day = dateArr[2];
+                    String month = dateArr[1];
+                    String year = dateArr[0];
+                    return day + "." + month + "." + year;
+                }
+                boolean resultDisplayed = false; // переменная-флаг
 
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel2.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel2);
+                        getContentPane().add(BorderLayout.CENTER, ta2);
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
+                    if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                        try {
+                            Connection connection = getConnection(); //открытие соединения с базой данных
+                            Statement statement = connection.createStatement(); // оператор запроса
+                            // Добавленное условие для проверки id_врача из таблицы "Приемы_пациентов" равен id_врача из таблицы "Врачи"
+                            ResultSet rs1 = statement.executeQuery("SELECT id_врача FROM Врачи WHERE Логин = '" + result + "'");
+                            int doctorId = -1;
+                            if (rs1.next()) {
+                                doctorId = rs1.getInt("id_врача");
+                            }
+                            rs1.close();
+
+                            if (doctorId != -1) { // Если id_врача был найден
+                                ResultSet rs = statement.executeQuery("SELECT * FROM Расписание_врачей WHERE id_врача = " + doctorId + " ORDER BY Дата_работы, Начало_работы;");// Сортировка по кабинетам
+                                boolean check1 = false;
+                                ta2.append("Расписание:");
+                                ta2.append("\n");
+                                while (rs.next()) { // пока есть данные
+                                    ta2.append(formatDate(rs.getString("Дата_работы")) + " с ");
+                                    ta2.append(rs.getString("Начало_работы")+ " по ");
+                                    ta2.append(rs.getString("Конец_работы") + " в кабинете ");
+                                    ta2.append(rs.getString("Номер_кабинета"));
+                                    ta2.append("\n");
+                                    check1 = true;
+
+                                }
+                                if (!check1) {
+                                    ta2.append(" отсутствует");
+                                }
+                                rs.close();
+                            }
+                            statement.close();
+                            connection.close();
+                        } catch (SQLException e) {
+                            ta2.append("SQLState: " + e.getSQLState());
+                            ta2.append("Error Code: " + e.getErrorCode());
+                            ta2.append("Message: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                        resultDisplayed = true; // установка значения переменной-флага
+                    }
+                }
+            });
+
+            m22.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel.setVisible(true);
+                        ta.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel);
+                        getContentPane().add(BorderLayout.CENTER, ta);
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
+                }
+            });
             // 3) Ведомость приема врача за месяц (сколько, когда врач принял пациентов и кого конкретно)
             m31.addActionListener(new ActionListener() {
                 boolean resultDisplayed = false; // переменная-флаг
@@ -507,7 +688,7 @@ public class Main extends JFrame {
                     SwingUtilities.invokeLater(() -> {
                         JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
                         JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                        JTable[] tables = {table1};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
                         for (JPanel p : panels) { // закрытие панелей
                             p.setVisible(false);
                             getContentPane().remove(p);
@@ -634,6 +815,14 @@ public class Main extends JFrame {
             m1.add(m11);
             JMenuItem m12 = new JMenuItem("Закрыть");
             m1.add(m12);
+            JMenuItem m041 = new JMenuItem("Открыть");
+            m04.add(m041);
+            JMenuItem m042 = new JMenuItem("Закрыть");
+            m04.add(m042);
+            JMenuItem m061 = new JMenuItem("Открыть");
+            m06.add(m061);
+            JMenuItem m062 = new JMenuItem("Закрыть");
+            m06.add(m062);
             // Видимость панелей
             JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
             for (JPanel p : panels) { // закрытие панелей
@@ -641,14 +830,11 @@ public class Main extends JFrame {
             }
             panel.setVisible(true);
             panel04.setPreferredSize(new Dimension(1000, 80));// размер панели
-            panel05.setPreferredSize(new Dimension(1000, 80));// размер панели
             panel06.setPreferredSize(new Dimension(1000, 80));// размер панели
             // Добавление текстовой области в панель
             panel.add(ta);
             panel1.add(ta1);
-            panel2.add(ta2);
-            panel3.add(ta3);
-            panel4.add(ta4);
+
 
             // Создание таблицы расписание врачей (4)
             DefaultTableModel model4 = new DefaultTableModel();
@@ -657,12 +843,14 @@ public class Main extends JFrame {
             // добавление компонентов (таблица Расписание врачей)
             JLabel lb041 = new JLabel("id врача");
             JTextField tf041 = new JTextField(10); // id врача принимает до 5 символов
-            JLabel lb042 = new JLabel("Начало работы");
+            JLabel lb042 = new JLabel("Дата работы");
             JTextField tf042 = new JTextField(10);
-            JLabel lb043 = new JLabel("Конец работы");
+            JLabel lb043 = new JLabel("Начало работы");
             JTextField tf043 = new JTextField(10);
-            JLabel lb044 = new JLabel("Номер кабинета");
-            JTextField tf044 = new JTextField(3); // Номер_кабинета до 3 символов
+            JLabel lb044 = new JLabel("Конец работы");
+            JTextField tf044 = new JTextField(10);
+            JLabel lb045 = new JLabel("Номер кабинета");
+            JTextField tf045 = new JTextField(3); // Номер_кабинета до 3 символов
             JButton add04 = new JButton("Добавить");
             JButton del04 = new JButton("Удалить");
             JButton update04 = new JButton("Обновить");
@@ -681,7 +869,7 @@ public class Main extends JFrame {
             table1.setSelectionBackground(Color.pink);
 
             // Расписание врачей
-            m04.addActionListener(new ActionListener() {
+            m041.addActionListener(new ActionListener() {
                 boolean resultDisplayed = false; // переменная-флаг
 
                 @Override
@@ -706,12 +894,14 @@ public class Main extends JFrame {
                         getContentPane().add(BorderLayout.CENTER, table4);
                         panel04.add(lb041);//id_врача
                         panel04.add(tf041);
-                        panel04.add(lb042);//начало работы
+                        panel04.add(lb042);//Дата работы
                         panel04.add(tf042);
-                        panel04.add(lb043);// конец работы
+                        panel04.add(lb043);//начало работы
                         panel04.add(tf043);
-                        panel04.add(lb044);// Номер_кабинета
+                        panel04.add(lb044);// конец работы
                         panel04.add(tf044);
+                        panel04.add(lb045);// Номер_кабинета
+                        panel04.add(tf045);
                         panel04.add(add04);//добавить
                         panel04.add(del04);//удалить
                         revalidate();
@@ -721,16 +911,17 @@ public class Main extends JFrame {
                         try {
                             Connection connection = getConnection(); //открытие соединения с базой данных
                             Statement statement = connection.createStatement(); // оператор запроса
-                            ResultSet rs = statement.executeQuery("SELECT * FROM Расписание_врачей ORDER BY Начало_работы;");// Сортировка по началу работы
+                            ResultSet rs = statement.executeQuery("SELECT * FROM Расписание_врачей ORDER BY Дата_работы, Начало_работы;");// Сортировка по началу работы
                             Object[] row = new Object[6];
                             model4.addColumn("id_врача");
+                            model4.addColumn("Дата_работы");
                             model4.addColumn("Начало_работы");
                             model4.addColumn("Конец_работы");
                             model4.addColumn("Номер_кабинета");
-                            model4.addRow(new Object[]{"<html><b>ID врача</b></html>", "<html><b>Начало работы</b></html>", "<html><b>Конец работы</b></html>", "<html><b>Номер кабинета</b></html>"});//жирный шрифт для 1 строки (название столбцов)
-                            SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            model4.addRow(new Object[]{"<html><b>ID врача</b></html>", "<html><b>Дата работы</b></html>","<html><b>Начало работы</b></html>", "<html><b>Конец работы</b></html>", "<html><b>Номер кабинета</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                             while (rs.next()) { // пока есть данные
-                                String[] rowData = {String.valueOf(rs.getInt("id_врача")), timestampFormat.format(rs.getTimestamp("Начало_работы")), timestampFormat.format(rs.getTimestamp("Конец_работы")), String.valueOf(rs.getInt("Номер_кабинета"))};
+                                String[] rowData = {String.valueOf(rs.getInt("id_врача")), dateFormat.format(rs.getDate("Дата_работы")), timeFormat.format(rs.getTime("Начало_работы")), timeFormat.format(rs.getTime("Конец_работы")),  String.valueOf(rs.getInt("Номер_кабинета"))};
                                 model4.addRow(rowData);
                             }
                             table4.setModel(model4);
@@ -749,21 +940,22 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
                         // Создание SQL-запроса INSERT (добавление)
-                        String sql = "INSERT INTO Расписание_врачей (id_врача, Начало_работы, Конец_работы, Номер_кабинета) VALUES (?,?,?,?, ?, ?)";
+                        String sql = "INSERT INTO Расписание_врачей (id_врача, Дата_работы, Начало_работы, Конец_работы, Номер_кабинета) VALUES (?,?,?, ?,?)";
                         PreparedStatement statement = connection.prepareStatement(sql);
 
                         int id = Integer.parseInt(tf041.getText());// Получаем id из JTextField
-                        Timestamp dt1 = Timestamp.valueOf(tf042.getText());  // Получаем Начало работы
-                        Timestamp dt2 = Timestamp.valueOf(tf043.getText());  // Получаем Конец_работы
-                        int cab = Integer.parseInt(tf044.getText());  // Получаем Номер_кабинета
+                        Date dt = Date.valueOf(tf042.getText());  // Получаем Дата приема
+                        Time time1 = Time.valueOf(tf043.getText());  // Получаем время приема
+                        Time time2 = Time.valueOf(tf044.getText());  // Получаем время приема
+                        int cab = Integer.parseInt(tf045.getText());  // Получаем Номер_кабинета
 
                         statement.setInt(1, (int) id);// Установка значения № карты для вставки
-                        statement.setTimestamp(2, new java.sql.Timestamp(dt1.getTime()));// Установка значения начало_работы
-                        statement.setTimestamp(3, new java.sql.Timestamp(dt2.getTime()));// Установка значения конец_работы
-                        statement.setInt(4, (int) cab);// Установка значения Номер_кабинета
+                        statement.setDate(2, new java.sql.Date(dt.getTime()));// Установка значения дата приема
+                        statement.setTime(3, new java.sql.Time(time1.getTime()));// Установка значения время приема
+                        statement.setTime(4, new java.sql.Time(time2.getTime()));// Установка значения время приема
+                        statement.setInt(5, (int) cab);// Установка значения Номер_кабинета
 
-
-                        model4.addRow(new Object[]{id, dt1, dt2, cab}); // добавление новой строки в таблицу
+                        model4.addRow(new Object[]{id, dt, time1, time2, cab}); // добавление новой строки в таблицу
                         statement.executeUpdate();// обновление таблицы в postgre
                         statement.close();
                         connection.close();
@@ -780,19 +972,22 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
                         // Создание SQL-запроса delete (на удаление)
-                        String sql = "DELETE FROM Расписание_врачей WHERE id_врача=? AND Начало_работы=? AND Конец_работы=? AND Номер_кабинета=?";
+                        String sql = "DELETE FROM Расписание_врачей WHERE id_врача=? AND Дата_работы=? AND Начало_работы=? AND Конец_работы=? AND Номер_кабинета=?";
                         PreparedStatement statement = connection.prepareStatement(sql);
                         int id = Integer.parseInt(model4.getValueAt(i04, 0).toString());// Получаем id удаляемой записи
-                        String dateBegin = (String) model4.getValueAt(i04, 1); // Получаем начало работы
-                        Date dt1 = Date.valueOf(dateBegin); // Преобразуем строку в объект типа java.sql.Date
-                        String dateEnd = (String) model4.getValueAt(i04, 2); // Получаем конец работы
-                        Date dt2 = Date.valueOf(dateEnd); // Преобразуем строку в объект типа java.sql.Date
-                        int cab = Integer.parseInt(model4.getValueAt(i04, 3).toString());// Получаем Номер_кабинета
+                        String dt = (String) model4.getValueAt(i04, 1); // Получаем дату приема
+                        Date date = Date.valueOf(dt); // Преобразуем строку в объект типа java.sql.Date
+                        String t1 = (String) model4.getValueAt(i04, 2); // Получаем время приема
+                        Time time1 = Time.valueOf(t1); // Преобразуем строку в объект типа java.sql.Date
+                        String t2 = (String) model4.getValueAt(i04, 3); // Получаем время приема
+                        Time time2 = Time.valueOf(t2); // Преобразуем строку в объект типа java.sql.Date
+                        int cab = Integer.parseInt(model4.getValueAt(i04, 4).toString());// Получаем Номер_кабинета
 
                         statement.setInt(1, (int) id);// Установка значения id для удаления
-                        statement.setDate(2, dt1);// Установка значения начало работы
-                        statement.setDate(3, dt2);// Установка значения конец работы
-                        statement.setInt(4, (int) cab);// Установка значения специальности
+                        statement.setDate(2, date);// Установка значения начало работы
+                        statement.setTime(3, time1);// Установка значения конец работы
+                        statement.setTime(4, time2);// Установка значения конец работы
+                        statement.setInt(5, (int) cab);// Установка значения специальности
 
                         statement.executeUpdate();// обновление таблицы в postgres
                         model4.removeRow(i04);// Удаление строки из модели таблицы
@@ -804,8 +999,35 @@ public class Main extends JFrame {
                     }
                 }
             });
+            m042.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel.setVisible(true);
+                        ta.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel);
+                        getContentPane().add(BorderLayout.CENTER, ta);
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
+                }
+            });
+
             // Таблица "Прием"
-            m06.addActionListener(new ActionListener() {
+            m061.addActionListener(new ActionListener() {
                 boolean resultDisplayed = false; // переменная-флаг
 
                 @Override
@@ -832,18 +1054,10 @@ public class Main extends JFrame {
                         panel06.add(tf061);
                         panel06.add(lb062);// номер_карты
                         panel06.add(tf062);
-                        panel06.add(lb063);// номер_кабинета
+                        panel06.add(lb063);
                         panel06.add(tf063);
                         panel06.add(lb064);// дата приема
                         panel06.add(tf064);
-                        panel06.add(lb065);// время приема
-                        panel06.add(tf065);
-                        panel06.add(lb066);// отметка
-                        panel06.add(tf066);
-                        panel06.add(lb067);// заключение
-                        panel06.add(tf067);
-                        panel06.add(lb068);// рекомендации
-                        panel06.add(tf068);
                         panel06.add(add06);//добавить
                         panel06.add(del06);//удалить
                         revalidate();
@@ -853,20 +1067,20 @@ public class Main extends JFrame {
                         try {
                             Connection connection = getConnection(); //открытие соединения с базой данных
                             Statement statement = connection.createStatement(); // оператор запроса
-                            ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
-                            Object[] row = new Object[8];
+
+                            ResultSet rs = statement.executeQuery("SELECT Прием_пациентов.*, Врачи.ФИО, Врачи.Должность FROM Прием_пациентов JOIN Врачи ON Прием_пациентов.id_врача = Врачи.id_врача ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
+                            Object[] row = new Object[7];
                             model6.addColumn("id_врача");
+                            model6.addColumn("ФИО");
+                            model6.addColumn("Должность");
                             model6.addColumn("Карта_пациента");
-                            model6.addColumn("Номер_кабинета");
                             model6.addColumn("Дата_приема");
                             model6.addColumn("Время_приема");
                             model6.addColumn("Отметка");
-                            model6.addColumn("Заключение");
-                            model6.addColumn("Рекомендации");
-                            model6.addRow(new Object[]{"<html><b>ID врача</b></html>",  "<html><b>Номер карты пациента</b></html>", "<html><b>Номер кабинета</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>", "<html><b>Отметка</b></html>","<html><b>Заключение</b></html>", "<html><b>Рекомендации</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                            model6.addRow(new Object[]{"<html><b>ID врача</b></html>",  "<html><b>ФИО врача</b></html>", "<html><b>Должность</b></html>", "<html><b>Номер карты пациента</b></html>", "<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>", "<html><b>Отметка</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                             while (rs.next()) { // пока есть данные
-                                String[] rowData = {String.valueOf(rs.getInt("id_врача")),  String.valueOf(rs.getInt("Карта_пациента")),String.valueOf(rs.getInt("Номер_кабинета")), dateFormat.format(rs.getDate("Дата_приема")), timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка")), rs.getString("Заключение"), rs.getString("Рекомендации")};
+                                String[] rowData = {String.valueOf(rs.getInt("id_врача")), rs.getString("ФИО"), rs.getString("Должность"), String.valueOf(rs.getInt("Карта_пациента")), dateFormat.format(rs.getDate("Дата_приема")), timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка"))};
                                 model6.addRow(rowData);
                             }
                             table6.setModel(model6);
@@ -885,29 +1099,35 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
                         // Создание SQL-запроса INSERT (добавление)
-                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Номер_кабинета, Дата_приема, Время_приема, Отметка, Заключение, Рекомендации) VALUES (?,?,?,?,?,?,?,?)";
+                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Дата_приема, Время_приема, Отметка) VALUES (?,?,?,?,?)";
                         PreparedStatement statement = connection.prepareStatement(sql);
                         int id = Integer.parseInt(tf061.getText());// Получаем id из JTextField
                         int mk = Integer.parseInt(tf062.getText());  // Получаем номер карты
-                        int cab = Integer.parseInt(tf063.getText());  // Получаем номер кабинета
-                        Date dt = Date.valueOf(tf064.getText());  // Получаем Дата приема
-                        Time time = Time.valueOf(tf065.getText());  // Получаем время приема
-                        boolean otmetka = Boolean.parseBoolean(tf066.getText());  // Получаем Отметка
-                        String zac = tf067.getText();  // Получаем заключение
-                        String rec = tf068.getText();  // Получаем рекомендации
+                        Date dt = Date.valueOf(tf063.getText());  // Получаем Дата приема
+                        Time time = Time.valueOf(tf064.getText());  // Получаем время приема
+                        boolean otmetka = Boolean.parseBoolean(tf065.getText());  // Получаем Отметка
+                        String fio = " ";
+                        String doctorD = " ";
+                        Statement statement2 = connection.createStatement();
+                        ResultSet rs2 = statement2.executeQuery("SELECT * FROM Врачи WHERE id_врача = '" + id + "'");
+                        if (rs2.next()) {
+                            fio = rs2.getString("ФИО");
+                            doctorD = rs2.getString("Должность");
+                        }
+                        rs2.close();
+                        statement2.close();
+
 
 
                         statement.setInt(1, (int) id);// Установка значения № карты для вставки
                         statement.setInt(2, (int) mk);// Установка значения номер карты
-                        statement.setInt(3, (int) cab);// Установка значения номер карты
-                        statement.setDate(4, new java.sql.Date(dt.getTime()));// Установка значения дата приема
-                        statement.setTime(5, new java.sql.Time(time.getTime()));// Установка значения время приема
-                        statement.setBoolean(6, (boolean) otmetka);// Установка значения отметка
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка знач рекомендации
+                        statement.setDate(3, new java.sql.Date(dt.getTime()));// Установка значения дата приема
+                        statement.setTime(4, new java.sql.Time(time.getTime()));// Установка значения время приема
+                        statement.setBoolean(5, (boolean) otmetka);// Установка значения отметка
 
 
-                        model6.addRow(new Object[]{id, mk,cab, dt, time,otmetka, zac, rec}); // добавление новой строки в таблицу
+
+                        model6.addRow(new Object[]{id, fio, doctorD, mk, dt, time,otmetka}); // добавление новой строки в таблицу
                         statement.executeUpdate();// обновление таблицы в postgre
                         statement.close();
                         connection.close();
@@ -922,27 +1142,23 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
                         // Создание SQL-запроса delete (на удаление)
-                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Номер_кабинета=? AND Дата_приема=? AND Время_приема=? AND Отметка=? AND Заключение=? AND Рекомендации=? ";
+                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=?  AND Дата_приема=? AND Время_приема=? AND Отметка=? ";
                         PreparedStatement statement = connection.prepareStatement(sql);
                         int id = Integer.parseInt(model6.getValueAt(i06, 0).toString());// Получаем id удаляемой записи
-                        int mk = Integer.parseInt(model6.getValueAt(i06, 1).toString());// номер карты
-                        int cab = Integer.parseInt(model6.getValueAt(i06, 2).toString());// номер кабинета
-                        String d = (String) model6.getValueAt(i06, 3); // Получаем дату приема
+                        int mk = Integer.parseInt(model6.getValueAt(i06, 3).toString());// номер карты
+                        String d = (String) model6.getValueAt(i06, 4); // Получаем дату приема
                         Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
-                        String t = (String) model6.getValueAt(i06, 4); // Получаем время приема
+                        String t = (String) model6.getValueAt(i06, 5); // Получаем время приема
                         Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
-                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 5).toString());// отметка
-                        String zac = (String) model6.getValueAt(i06, 6); // Получаем заключение
-                        String rec = (String) model6.getValueAt(i06, 7); // Получаем рекомендацию
+                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 6).toString());// отметка
+
 
                         statement.setInt(1, (int) id);// Установка значения id для удаления
                         statement.setInt(2, (int) mk);// Установка значения медкарта
-                        statement.setInt(3, (int) cab);// Установка значения кабинета
-                        statement.setDate(4, date);// Установка значения даты
-                        statement.setTime(5, time);// Установка значения время
-                        statement.setBoolean(6, (boolean) otmetka);// Установка отметки
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка значения рекомендации
+                        statement.setDate(3, date);// Установка значения даты
+                        statement.setTime(4, time);// Установка значения время
+                        statement.setBoolean(5, (boolean) otmetka);// Установка отметки
+
 
                         statement.executeUpdate();// обновление таблицы в postgres
                         model6.removeRow(i06);// Удаление строки из модели таблицы
@@ -954,17 +1170,43 @@ public class Main extends JFrame {
                     }
                 }
             });
-            //1) Ведомость регистратуры для разноса мед.карт по кабинетам на день
-            // выводит ведомость на сегодняшний день
-            m11.addActionListener(new ActionListener() {
-                boolean resultDisplayed = false; // переменная-флаг
-
+            m062.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent a) {
                     SwingUtilities.invokeLater(() -> {
                         JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
                         JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                        JTable[] tables = {table1};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel.setVisible(true);
+                        ta.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel);
+                        getContentPane().add(BorderLayout.CENTER, ta);
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
+                }
+            });
+
+            //1) Ведомость регистратуры для разноса мед.карт по кабинетам на день
+            // выводит ведомость на сегодняшний день
+            m11.addActionListener(new ActionListener() {
+                boolean resultDisplayed = false; // переменная-флаг
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
                         for (JPanel p : panels) { // закрытие панелей
                             p.setVisible(false);
                             getContentPane().remove(p);
@@ -981,33 +1223,43 @@ public class Main extends JFrame {
                         revalidate();
                         repaint();//Обновление компонентов фрейма
                     });
-                    if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                    if (!resultDisplayed) {
                         try {
-                            Connection connection = getConnection(); //открытие соединения с базой данных
-                            String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());// текущая дата
+                            Connection connection = getConnection(); // открытие соединения с базой данных
+                            String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()); // текущая дата
                             Statement statement = connection.createStatement(); // оператор запроса
-                            ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов WHERE Дата_приема = '" + date + "' ORDER BY Номер_кабинета, Время_приема");
+
+                            // Запрос для получения данных из таблицы "Приемы" с совпадающими значениями id врача и даты приема
+                            String query = "SELECT * FROM Прием_пациентов P, Расписание_врачей R WHERE P.id_врача = R.id_врача AND P.Дата_приема = R.Дата_работы AND P.Дата_приема = '" + date + "' ORDER BY R.Номер_кабинета, P.Время_приема";
+                            ResultSet rs = statement.executeQuery(query);
                             Map<String, List<String>> map = new HashMap<String, List<String>>();
+
                             while (rs.next()) {
                                 String cabinet = rs.getString("Номер_кабинета");
                                 String cardNumber = rs.getString("Карта_пациента");
                                 String time = rs.getString("Время_приема");
+
                                 if (!map.containsKey(cabinet)) {
                                     map.put(cabinet, new ArrayList<String>());
                                 }
                                 map.get(cabinet).add("\n" + "Мед.карта №" + cardNumber + " в " + time);
                             }
+
                             ta1.append("Ведомость регистратуры для разноса мед.карт по кабинетам на сегодняшний день " + date);
+
                             for (String cabinet : map.keySet()) {
                                 ta1.append("\n");
                                 ta1.append("Кабинет №" + cabinet + ": ");
+
                                 for (String cardInfo : map.get(cabinet)) {
                                     ta1.append(cardInfo);
                                 }
                             }
+
                             if (map.isEmpty()) {
                                 ta1.append(" отсутствует");
                             }
+
                             rs.close();
                             statement.close();
                             connection.close();
@@ -1051,7 +1303,6 @@ public class Main extends JFrame {
 
         }
     }
-
     private void displayPatientPanel() { // ПАЦИЕНТ
         String result = checkAuthorization();        // Проверка авторизации
         if (!result.equals("0")) {
@@ -1071,29 +1322,29 @@ public class Main extends JFrame {
             mbP.add(m1);
             mbP.add(m3);
             JMenuItem m11 = new JMenuItem("Открыть");
-            m1.add(m11);;
-            JMenuItem m31 = new JMenuItem("Открыть");
-            m3.add(m31);
+            m1.add(m11);
+            ;
             JMenuItem m12 = new JMenuItem("Закрыть");
             m1.add(m12);
+            JMenuItem m31 = new JMenuItem("Открыть");
+            m3.add(m31);
             JMenuItem m32 = new JMenuItem("Закрыть");
             m3.add(m32);
+            JMenuItem m061 = new JMenuItem("Открыть");
+            m06.add(m061);
+            JMenuItem m062 = new JMenuItem("Закрыть");
+            m06.add(m062);
             // Видимость панелей
             JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
             for (JPanel p : panels) { // закрытие панелей
                 p.setVisible(false);
             }
             panel.setVisible(true);
-
-            panel04.setPreferredSize(new Dimension(1000, 80));// размер панели
-            panel05.setPreferredSize(new Dimension(1000, 80));// размер панели
             panel06.setPreferredSize(new Dimension(1000, 80));// размер панели
             // Добавление текстовой области в панель
             panel.add(ta);
             panel1.add(ta1);
-            panel2.add(ta2);
             panel3.add(ta3);
-            panel4.add(ta4);
             // добавление компонентов (задание 3)
             JLabel lb1 = new JLabel("Введите месяц");
             JTextField tf1 = new JTextField(2); // принимает до 2 символов
@@ -1111,6 +1362,228 @@ public class Main extends JFrame {
             JTable table6 = new JTable(model6);
             table6.setSelectionBackground(Color.pink);// выделение строки
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");// формат для даты
+            // Таблица "Прием"
+            m061.addActionListener(new ActionListener() {
+                boolean resultDisplayed = false; // переменная-флаг
+
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel06.setVisible(true);
+                        table6.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel06);
+                        getContentPane().add(BorderLayout.CENTER, table6);
+                        panel06.add(lb0661);//фио
+                        panel06.add(tf0661);
+                        panel06.add(lb063);// н
+                        panel06.add(tf063);
+                        panel06.add(lb064);//
+                        panel06.add(tf064);
+                        panel06.add(add06);//добавить
+                        panel06.add(del06);//удалить
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
+                    if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                        try {
+                            Connection connection = getConnection(); //открытие соединения с базой данных
+                            Statement statement = connection.createStatement(); // оператор запроса
+                            ResultSet rs1 = statement.executeQuery("SELECT Номер_карты FROM Пациенты WHERE Логин = '" + result + "'");
+                            int patientId = -1;
+                            if (rs1.next()) {
+                                patientId = rs1.getInt("Номер_карты");
+                            }
+                            rs1.close();
+
+                            if (patientId != -1) { // Если id был найден
+                                ResultSet rs = statement.executeQuery("SELECT Прием_пациентов.*, Врачи.ФИО, Врачи.Должность " +
+                                        "FROM Прием_пациентов " +
+                                        "JOIN Врачи ON Прием_пациентов.id_врача = Врачи.id_врача " +
+                                        "WHERE Карта_пациента =" + patientId +
+                                        "ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
+                                Object[] row = new Object[8];
+                                model6.addColumn("ФИО");
+                                model6.addColumn("Должность");
+                                model6.addColumn("Дата_приема");
+                                model6.addColumn("Время_приема");
+                                model6.addColumn("Отметка");
+                                model6.addColumn("Заключение");
+                                model6.addColumn("Рекомендации");
+                                model6.addRow(new Object[]{
+                                        "<html><b>ФИО врача</b></html>",
+                                        "<html><b>Должность</b></html>",
+                                        "<html><b>Дата приема</b></html>",
+                                        "<html><b>Время приема</b></html>",
+                                        "<html><b>Отметка</b></html>",
+                                        "<html><b>Заключение</b></html>",
+                                        "<html><b>Рекомендации</b></html>"
+                                });//жирный шрифт для 1 строки (название столбцов)
+                                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                                while (rs.next()) { // пока есть данные
+                                    String[] rowData = {
+                                            rs.getString("ФИО"),
+                                            rs.getString("Должность"),
+                                            dateFormat.format(rs.getDate("Дата_приема")),
+                                            timeFormat.format(rs.getTime("Время_приема")),
+                                            String.valueOf(rs.getBoolean("Отметка")),
+                                            rs.getString("Заключение"),
+                                            rs.getString("Рекомендации")
+                                    };
+                                    model6.addRow(rowData);
+                                }
+                                table6.setModel(model6);
+                                statement.close();
+                                connection.close();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                        resultDisplayed = true; // установка значения переменной-флага
+                    }
+                }
+            });
+//добавление строки в таблице прием
+            add06.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        Connection connection = getConnection(); //открытие соединения с базой данных
+                        Statement statement1 = connection.createStatement(); // оператор запроса
+                        ResultSet rs1 = statement1.executeQuery("SELECT Номер_карты FROM Пациенты WHERE Логин = '" + result + "'");
+                        int patientId = -1;
+                        if (rs1.next()) {
+                            patientId = rs1.getInt("Номер_карты");
+                        }
+                        rs1.close();
+                        statement1.close();
+                        // Получение id_врача на основе ФИО врача
+                        String doctorFullName = tf0661.getText(); // Получение ФИО врача из JTextField
+                        int doctorId = -1;
+                        String doctorD = " ";
+                        Statement statement2 = connection.createStatement();
+                        ResultSet rs2 = statement2.executeQuery("SELECT * FROM Врачи WHERE ФИО = '" + doctorFullName + "'");
+                        if (rs2.next()) {
+                            doctorId = rs2.getInt("id_врача");
+                            doctorD = rs2.getString("Должность");
+                        }
+                        rs2.close();
+                        statement2.close();
+
+                        // Создание SQL-запроса INSERT (добавление)
+                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Дата_приема, Время_приема ) VALUES (?,?,?,? )";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+                        int mk = patientId;
+                        Date dt = Date.valueOf(tf063.getText());  // Получаем Дата приема
+                        Time time = Time.valueOf(tf064.getText());  // Получаем время приема
+                        boolean otm = false;
+
+                        statement.setInt(1, (int) doctorId);// Установка значения id
+                        statement.setInt(2, (int) mk);// Установка значения номер карты
+                        statement.setDate(3, new java.sql.Date(dt.getTime()));// Установка значения дата приема
+                        statement.setTime(4, new java.sql.Time(time.getTime()));// Установка значения время приема
+
+
+                        model6.addRow(new Object[]{doctorFullName, doctorD, dt, time, otm }); // добавление новой строки в таблицу
+                        statement.executeUpdate();// обновление таблицы в postgre
+                        statement.close();
+                        connection.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            del06.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int i06 = table6.getSelectedRow();// Номер выделенной строки
+                    try {
+                        Connection connection = getConnection();
+                        Statement statement1 = connection.createStatement(); // оператор запроса
+                        ResultSet rs1 = statement1.executeQuery("SELECT Номер_карты FROM Пациенты WHERE Логин = '" + result + "'");
+                        int patientId = -1;
+                        if (rs1.next()) {
+                            patientId = rs1.getInt("Номер_карты");
+                        }
+                        rs1.close();
+                        String DFIO = (String) model6.getValueAt(i06, 0); // Получаем фио врача
+                        Statement statement2 = connection.createStatement(); // оператор запроса
+                        ResultSet rs2 = statement2.executeQuery("SELECT id_врача FROM Врачи WHERE ФИО = '" + DFIO + "' ");
+                        int doctorID = -1;
+                        if (rs2.next()) {
+                            doctorID = rs2.getInt("id_врача");
+                        }
+                        rs2.close();
+
+                        // Создание SQL-запроса delete (на удаление)
+                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? AND Отметка=? AND Заключение=? AND Рекомендации=? ";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+
+                        String d = (String) model6.getValueAt(i06, 2); // Получаем дату приема
+                        Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
+                        String t = (String) model6.getValueAt(i06, 3); // Получаем время приема
+                        Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
+                        boolean otmetka = false;
+                        String zac = null;
+                        String rec = null;
+
+                        statement.setInt(1, (int) doctorID);// Установка значения id для удаления
+                        statement.setInt(2, (int) patientId);// Установка значения медкарта
+                        statement.setDate(3, date);// Установка значения даты
+                        statement.setTime(4, time);// Установка значения время
+                        statement.setBoolean(5, (boolean) otmetka);// Установка отметки
+                        statement.setString(6, (String) zac);// Установка значения заключения
+                        statement.setString(7, (String) rec);// Установка значения рекомендации
+
+                        statement.executeUpdate();// обновление таблицы в postgres
+                        model6.removeRow(i06);// Удаление строки из модели таблицы
+                        model6.fireTableDataChanged(); // Обновление модели таблицы
+                        statement.close();
+                        statement1.close();
+                        statement2.close();
+                        connection.close();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            m062.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent a) {
+                    SwingUtilities.invokeLater(() -> {
+                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
+                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
+                        for (JPanel p : panels) { // закрытие панелей
+                            p.setVisible(false);
+                            getContentPane().remove(p);
+                        }
+                        for (JTextArea tt : textAreas) { // удаление текстового поля
+                            getContentPane().remove(tt);
+                        }
+                        for (JTable t : tables) { // удаление таблиц
+                            getContentPane().remove(t);
+                        }
+                        panel.setVisible(true);
+                        ta.setVisible(true);
+                        getContentPane().add(BorderLayout.SOUTH, panel);
+                        getContentPane().add(BorderLayout.CENTER, ta);
+                        revalidate();
+                        repaint();//Обновление компонентов фрейма
+                    });
+                }
+            });
+
             //1) Ведомость регистратуры для разноса мед.карт по кабинетам на день
             // выводит ведомость на сегодняшний день
             m11.addActionListener(new ActionListener() {
@@ -1121,7 +1594,7 @@ public class Main extends JFrame {
                     SwingUtilities.invokeLater(() -> {
                         JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
                         JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                        JTable[] tables = {table1};
+                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
                         for (JPanel p : panels) { // закрытие панелей
                             p.setVisible(false);
                             getContentPane().remove(p);
@@ -1152,19 +1625,21 @@ public class Main extends JFrame {
                             rs1.close();
 
                             if (patientId != -1) { // Если id_врача был найден
-                                ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов WHERE Карта_пациента = " + patientId + " ORDER BY Время_приема;");// Сортировка по кабинетам
+                                ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов JOIN Врачи ON Прием_пациентов.id_врача = Врачи.id_врача WHERE Карта_пациента = " + patientId + " ORDER BY Время_приема;");
                                 boolean check1 = false;
 
-                                ta1.append("Записи на сегодняшний день " + date);
+                                ta1.append("Записи на сегодняшний день " + date + " :");
                                 while (rs.next()) { // пока есть данные
                                     if (date.equals(rs.getString("Дата_приема"))) { // проверка, что дата приема сегодня
                                         ta1.append("\n");
-                                        ta1.append("Записан " + rs.getString("Время_приема"));
+                                        ta1.append("Записан на прием в  " + rs.getString("Время_приема"));
+                                        ta1.append(" № кабинета " + rs.getString("Номер_кабинета"));
+                                        ta1.append(" к врачу " + rs.getString("ФИО"));
                                         check1 = true;
                                     }
                                 }
                                 if (!check1) {
-                                    ta1.append(" отсутствует");
+                                    ta1.append(" отсутствуют");
                                 }
                                 rs.close();
                             }
@@ -1210,6 +1685,7 @@ public class Main extends JFrame {
             // 3) Ведомость приема врача за месяц (сколько, когда врач принял пациентов и кого конкретно)
             m31.addActionListener(new ActionListener() {
                 boolean resultDisplayed = false; // переменная-флаг
+
                 @Override
                 public void actionPerformed(ActionEvent a) {
                     SwingUtilities.invokeLater(() -> {
@@ -1242,6 +1718,7 @@ public class Main extends JFrame {
             });
             bt31.addActionListener(new ActionListener() {
                 boolean resultDisplayed = false; // переменная
+
                 @Override
                 public void actionPerformed(ActionEvent a) {
                     if (!resultDisplayed) { // проверка
@@ -1289,7 +1766,8 @@ public class Main extends JFrame {
                             e.printStackTrace();
                         }
                         resultDisplayed = true; // установка значения переменной-флага
-                    }}
+                    }
+                }
             });
             m32.addActionListener(new ActionListener() {
                 @Override
@@ -1317,162 +1795,10 @@ public class Main extends JFrame {
                     });
                 }
             });
-            // Таблица "Прием"
-            m06.addActionListener(new ActionListener() {
-                boolean resultDisplayed = false; // переменная-флаг
-
-                @Override
-                public void actionPerformed(ActionEvent a) {
-                    SwingUtilities.invokeLater(() -> {
-                        JPanel[] panels = {panel, panel01, panel02, panel03, panel04, panel05, panel06, panel1, panel2, panel3, panel4};
-                        JTextArea[] textAreas = {ta, ta1, ta2, ta3, ta4};
-                        JTable[] tables = {table1, table2, table3, table4, table5, table6};
-                        for (JPanel p : panels) { // закрытие панелей
-                            p.setVisible(false);
-                            getContentPane().remove(p);
-                        }
-                        for (JTextArea tt : textAreas) { // удаление текстового поля
-                            getContentPane().remove(tt);
-                        }
-                        for (JTable t : tables) { // удаление таблиц
-                            getContentPane().remove(t);
-                        }
-                        panel06.setVisible(true);
-                        table6.setVisible(true);
-                        getContentPane().add(BorderLayout.SOUTH, panel06);
-                        getContentPane().add(BorderLayout.CENTER, table6);
-                        panel06.add(lb061);//id_врача
-                        panel06.add(tf061);
-                        panel06.add(lb062);// номер_карты
-                        panel06.add(tf062);
-                        panel06.add(lb063);// номер_кабинета
-                        panel06.add(tf063);
-                        panel06.add(lb064);// дата приема
-                        panel06.add(tf064);
-                        panel06.add(lb065);// время приема
-                        panel06.add(tf065);
-                        panel06.add(lb066);// отметка
-                        panel06.add(tf066);
-                        panel06.add(lb067);// заключение
-                        panel06.add(tf067);
-                        panel06.add(lb068);// рекомендации
-                        panel06.add(tf068);
-                        panel06.add(add06);//добавить
-                        panel06.add(del06);//удалить
-                        panel06.add(update06);//обновить
-                        revalidate();
-                        repaint();//Обновление компонентов фрейма
-                    });
-                    if (!resultDisplayed) { // проверка, что результат еще не был выведен
-                        try {
-                            Connection connection = getConnection(); //открытие соединения с базой данных
-                            Statement statement = connection.createStatement(); // оператор запроса
-                            ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
-                            Object[] row = new Object[8];
-                            model6.addColumn("id_врача");
-                            model6.addColumn("Карта_пациента");
-                            model6.addColumn("Номер_кабинета");
-                            model6.addColumn("Дата_приема");
-                            model6.addColumn("Время_приема");
-                            model6.addColumn("Отметка");
-                            model6.addColumn("Заключение");
-                            model6.addColumn("Рекомендации");
-                            model6.addRow(new Object[]{"<html><b>ID врача</b></html>",  "<html><b>Номер карты пациента</b></html>", "<html><b>Номер кабинета</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>", "<html><b>Отметка</b></html>","<html><b>Заключение</b></html>", "<html><b>Рекомендации</b></html>"});//жирный шрифт для 1 строки (название столбцов)
-                            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-                            while (rs.next()) { // пока есть данные
-                                String[] rowData = {String.valueOf(rs.getInt("id_врача")),  String.valueOf(rs.getInt("Карта_пациента")),String.valueOf(rs.getInt("Номер_кабинета")), dateFormat.format(rs.getDate("Дата_приема")), timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка")), rs.getString("Заключение"), rs.getString("Рекомендации")};
-                                model6.addRow(rowData);
-                            }
-                            table6.setModel(model6);
-                            statement.close();
-                            connection.close();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
-                        resultDisplayed = true; // установка значения переменной-флага
-                    }
-                }
-            });
-//добавление строки в таблице прием
-            add06.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        Connection connection = getConnection();
-                        // Создание SQL-запроса INSERT (добавление)
-                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Номер_кабинета, Дата_приема, Время_приема, Отметка, Заключение, Рекомендации) VALUES (?,?,?,?,?,?,?,?)";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        int id = Integer.parseInt(tf061.getText());// Получаем id из JTextField
-                        int mk = Integer.parseInt(tf062.getText());  // Получаем номер карты
-                        int cab = Integer.parseInt(tf063.getText());  // Получаем номер кабинета
-                        Date dt = Date.valueOf(tf064.getText());  // Получаем Дата приема
-                        Time time = Time.valueOf(tf065.getText());  // Получаем время приема
-                        boolean otmetka = Boolean.parseBoolean(tf066.getText());  // Получаем Отметка
-                        String zac = tf067.getText();  // Получаем заключение
-                        String rec = tf068.getText();  // Получаем рекомендации
-
-
-                        statement.setInt(1, (int) id);// Установка значения № карты для вставки
-                        statement.setInt(2, (int) mk);// Установка значения номер карты
-                        statement.setInt(3, (int) cab);// Установка значения номер карты
-                        statement.setDate(4, new java.sql.Date(dt.getTime()));// Установка значения дата приема
-                        statement.setTime(5, new java.sql.Time(time.getTime()));// Установка значения время приема
-                        statement.setBoolean(6, (boolean) otmetka);// Установка значения отметка
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка знач рекомендации
-
-
-                        model6.addRow(new Object[]{id, mk,cab, dt, time,otmetka, zac, rec}); // добавление новой строки в таблицу
-                        statement.executeUpdate();// обновление таблицы в postgre
-                        statement.close();
-                        connection.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-            del06.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    int i06 = table6.getSelectedRow();// Номер выделенной строки
-                    try {
-                        Connection connection = getConnection();
-                        // Создание SQL-запроса delete (на удаление)
-                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Номер_кабинета=? AND Дата_приема=? AND Время_приема=? AND Отметка=? AND Заключение=? AND Рекомендации=? ";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        int id = Integer.parseInt(model6.getValueAt(i06, 0).toString());// Получаем id удаляемой записи
-                        int mk = Integer.parseInt(model6.getValueAt(i06, 1).toString());// номер карты
-                        int cab = Integer.parseInt(model6.getValueAt(i06, 2).toString());// номер кабинета
-                        String d = (String) model6.getValueAt(i06, 3); // Получаем дату приема
-                        Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
-                        String t = (String) model6.getValueAt(i06, 4); // Получаем время приема
-                        Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
-                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 5).toString());// отметка
-                        String zac = (String) model6.getValueAt(i06, 6); // Получаем заключение
-                        String rec = (String) model6.getValueAt(i06, 7); // Получаем рекомендацию
-
-                        statement.setInt(1, (int) id);// Установка значения id для удаления
-                        statement.setInt(2, (int) mk);// Установка значения медкарта
-                        statement.setInt(3, (int) cab);// Установка значения кабинета
-                        statement.setDate(4, date);// Установка значения даты
-                        statement.setTime(5, time);// Установка значения время
-                        statement.setBoolean(6, (boolean) otmetka);// Установка отметки
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка значения рекомендации
-
-                        statement.executeUpdate();// обновление таблицы в postgres
-                        model6.removeRow(i06);// Удаление строки из модели таблицы
-                        model6.fireTableDataChanged(); // Обновление модели таблицы
-                        statement.close();
-                        connection.close();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
         }
     }
 
-
-    private void displayAdminPanel() {
+    private void displayAdminPanel() { //Администратор
         String result = checkAuthorization();        // Проверка авторизации
         if (!result.equals("0")) {
             // закрытие меню
@@ -2254,9 +2580,9 @@ public class Main extends JFrame {
                         getContentPane().add(BorderLayout.CENTER, table6);
                         panel06.add(lb061);//id_врача
                         panel06.add(tf061);
-                        panel06.add(lb062);// номер_карты
+                        panel06.add(lb062);
                         panel06.add(tf062);
-                        panel06.add(lb063);// номер_кабинета
+                        panel06.add(lb063);
                         panel06.add(tf063);
                         panel06.add(lb064);// дата приема
                         panel06.add(tf064);
@@ -2266,8 +2592,6 @@ public class Main extends JFrame {
                         panel06.add(tf066);
                         panel06.add(lb067);// заключение
                         panel06.add(tf067);
-                        panel06.add(lb068);// рекомендации
-                        panel06.add(tf068);
                         panel06.add(add06);//добавить
                         panel06.add(del06);//удалить
                         revalidate();
@@ -2278,19 +2602,18 @@ public class Main extends JFrame {
                             Connection connection = getConnection(); //открытие соединения с базой данных
                             Statement statement = connection.createStatement(); // оператор запроса
                             ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов ORDER BY Дата_приема, Время_приема;");// Сортировка по началу работы
-                            Object[] row = new Object[8];
+                            Object[] row = new Object[7];
                             model6.addColumn("id_врача");
                             model6.addColumn("Карта_пациента");
-                            model6.addColumn("Номер_кабинета");
                             model6.addColumn("Дата_приема");
                             model6.addColumn("Время_приема");
                             model6.addColumn("Отметка");
                             model6.addColumn("Заключение");
                             model6.addColumn("Рекомендации");
-                            model6.addRow(new Object[]{"<html><b>ID врача</b></html>",  "<html><b>Номер карты пациента</b></html>", "<html><b>Номер кабинета</b></html>","<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>", "<html><b>Отметка</b></html>","<html><b>Заключение</b></html>", "<html><b>Рекомендации</b></html>"});//жирный шрифт для 1 строки (название столбцов)
+                            model6.addRow(new Object[]{"<html><b>ID врача</b></html>",  "<html><b>Номер карты пациента</b></html>", "<html><b>Дата приема</b></html>", "<html><b>Время приема</b></html>", "<html><b>Отметка</b></html>","<html><b>Заключение</b></html>", "<html><b>Рекомендации</b></html>"});//жирный шрифт для 1 строки (название столбцов)
                             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                             while (rs.next()) { // пока есть данные
-                                String[] rowData = {String.valueOf(rs.getInt("id_врача")),  String.valueOf(rs.getInt("Карта_пациента")),String.valueOf(rs.getInt("Номер_кабинета")), dateFormat.format(rs.getDate("Дата_приема")), timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка")), rs.getString("Заключение"), rs.getString("Рекомендации")};
+                                String[] rowData = {String.valueOf(rs.getInt("id_врача")),  String.valueOf(rs.getInt("Карта_пациента")), dateFormat.format(rs.getDate("Дата_приема")), timeFormat.format(rs.getTime("Время_приема")), String.valueOf(rs.getBoolean("Отметка")), rs.getString("Заключение"), rs.getString("Рекомендации")};
                                 model6.addRow(rowData);
                             }
                             table6.setModel(model6);
@@ -2309,29 +2632,27 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
                         // Создание SQL-запроса INSERT (добавление)
-                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Номер_кабинета, Дата_приема, Время_приема, Отметка, Заключение, Рекомендации) VALUES (?,?,?,?,?,?,?,?)";
+                        String sql = "INSERT INTO Прием_пациентов (id_врача, Карта_пациента, Дата_приема, Время_приема, Отметка, Заключение, Рекомендации) VALUES (?,?,?,?,?,?,?)";
                         PreparedStatement statement = connection.prepareStatement(sql);
                         int id = Integer.parseInt(tf061.getText());// Получаем id из JTextField
                         int mk = Integer.parseInt(tf062.getText());  // Получаем номер карты
-                        int cab = Integer.parseInt(tf063.getText());  // Получаем номер кабинета
-                        Date dt = Date.valueOf(tf064.getText());  // Получаем Дата приема
-                        Time time = Time.valueOf(tf065.getText());  // Получаем время приема
-                        boolean otmetka = Boolean.parseBoolean(tf066.getText());  // Получаем Отметка
-                        String zac = tf067.getText();  // Получаем заключение
-                        String rec = tf068.getText();  // Получаем рекомендации
+                        Date dt = Date.valueOf(tf063.getText());  // Получаем Дата приема
+                        Time time = Time.valueOf(tf064.getText());  // Получаем время приема
+                        boolean otmetka = Boolean.parseBoolean(tf065.getText());  // Получаем Отметка
+                        String zac = tf066.getText();  // Получаем заключение
+                        String rec = tf067.getText();  // Получаем рекомендации
 
 
                         statement.setInt(1, (int) id);// Установка значения № карты для вставки
                         statement.setInt(2, (int) mk);// Установка значения номер карты
-                        statement.setInt(3, (int) cab);// Установка значения номер карты
-                        statement.setDate(4, new java.sql.Date(dt.getTime()));// Установка значения дата приема
-                        statement.setTime(5, new java.sql.Time(time.getTime()));// Установка значения время приема
-                        statement.setBoolean(6, (boolean) otmetka);// Установка значения отметка
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка знач рекомендации
+                        statement.setDate(3, new java.sql.Date(dt.getTime()));// Установка значения дата приема
+                        statement.setTime(4, new java.sql.Time(time.getTime()));// Установка значения время приема
+                        statement.setBoolean(5, (boolean) otmetka);// Установка значения отметка
+                        statement.setString(6, (String) zac);// Установка значения заключения
+                        statement.setString(7, (String) rec);// Установка знач рекомендации
 
 
-                        model6.addRow(new Object[]{id, mk,cab, dt, time,otmetka, zac, rec}); // добавление новой строки в таблицу
+                        model6.addRow(new Object[]{id, mk, dt, time,otmetka, zac, rec}); // добавление новой строки в таблицу
                         statement.executeUpdate();// обновление таблицы в postgre
                         statement.close();
                         connection.close();
@@ -2346,27 +2667,25 @@ public class Main extends JFrame {
                     try {
                         Connection connection = getConnection();
                         // Создание SQL-запроса delete (на удаление)
-                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Номер_кабинета=? AND Дата_приема=? AND Время_приема=? AND Отметка=? AND Заключение=? AND Рекомендации=? ";
+                        String sql = "DELETE FROM Прием_пациентов WHERE id_врача=? AND Карта_пациента=? AND Дата_приема=? AND Время_приема=? AND Отметка=? AND Заключение=? AND Рекомендации=? ";
                         PreparedStatement statement = connection.prepareStatement(sql);
                         int id = Integer.parseInt(model6.getValueAt(i06, 0).toString());// Получаем id удаляемой записи
                         int mk = Integer.parseInt(model6.getValueAt(i06, 1).toString());// номер карты
-                        int cab = Integer.parseInt(model6.getValueAt(i06, 2).toString());// номер кабинета
-                        String d = (String) model6.getValueAt(i06, 3); // Получаем дату приема
+                        String d = (String) model6.getValueAt(i06, 2); // Получаем дату приема
                         Date date = Date.valueOf(d); // Преобразуем строку в объект типа java.sql.Date
-                        String t = (String) model6.getValueAt(i06, 4); // Получаем время приема
+                        String t = (String) model6.getValueAt(i06, 3); // Получаем время приема
                         Time time = Time.valueOf(t); // Преобразуем строку в объект типа java.sql.Date
-                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 5).toString());// отметка
-                        String zac = (String) model6.getValueAt(i06, 6); // Получаем заключение
-                        String rec = (String) model6.getValueAt(i06, 7); // Получаем рекомендацию
+                        boolean otmetka = Boolean.parseBoolean(model6.getValueAt(i06, 4).toString());// отметка
+                        String zac = (String) model6.getValueAt(i06, 5); // Получаем заключение
+                        String rec = (String) model6.getValueAt(i06, 6); // Получаем рекомендацию
 
                         statement.setInt(1, (int) id);// Установка значения id для удаления
                         statement.setInt(2, (int) mk);// Установка значения медкарта
-                        statement.setInt(3, (int) cab);// Установка значения кабинета
-                        statement.setDate(4, date);// Установка значения даты
-                        statement.setTime(5, time);// Установка значения время
-                        statement.setBoolean(6, (boolean) otmetka);// Установка отметки
-                        statement.setString(7, (String) zac);// Установка значения заключения
-                        statement.setString(8, (String) rec);// Установка значения рекомендации
+                        statement.setDate(3, date);// Установка значения даты
+                        statement.setTime(4, time);// Установка значения время
+                        statement.setBoolean(5, (boolean) otmetka);// Установка отметки
+                        statement.setString(6, (String) zac);// Установка значения заключения
+                        statement.setString(7, (String) rec);// Установка значения рекомендации
 
                         statement.executeUpdate();// обновление таблицы в postgres
                         model6.removeRow(i06);// Удаление строки из модели таблицы
@@ -2404,33 +2723,43 @@ public class Main extends JFrame {
                         revalidate();
                         repaint();//Обновление компонентов фрейма
                     });
-                    if (!resultDisplayed) { // проверка, что результат еще не был выведен
+                    if (!resultDisplayed) {
                         try {
-                            Connection connection = getConnection(); //открытие соединения с базой данных
-                            String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now());// текущая дата
+                            Connection connection = getConnection(); // открытие соединения с базой данных
+                            String date = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDateTime.now()); // текущая дата
                             Statement statement = connection.createStatement(); // оператор запроса
-                            ResultSet rs = statement.executeQuery("SELECT * FROM Прием_пациентов WHERE Дата_приема = '" + date + "' ORDER BY Номер_кабинета, Время_приема");
+
+                            // Запрос для получения данных из таблицы "Приемы" с совпадающими значениями id врача и даты приема
+                            String query = "SELECT * FROM Прием_пациентов P, Расписание_врачей R WHERE P.id_врача = R.id_врача AND P.Дата_приема = R.Дата_работы AND P.Дата_приема = '" + date + "' ORDER BY R.Номер_кабинета, P.Время_приема";
+                            ResultSet rs = statement.executeQuery(query);
                             Map<String, List<String>> map = new HashMap<String, List<String>>();
+
                             while (rs.next()) {
                                 String cabinet = rs.getString("Номер_кабинета");
                                 String cardNumber = rs.getString("Карта_пациента");
                                 String time = rs.getString("Время_приема");
+
                                 if (!map.containsKey(cabinet)) {
                                     map.put(cabinet, new ArrayList<String>());
                                 }
                                 map.get(cabinet).add("\n" + "Мед.карта №" + cardNumber + " в " + time);
                             }
+
                             ta1.append("Ведомость регистратуры для разноса мед.карт по кабинетам на сегодняшний день " + date);
+
                             for (String cabinet : map.keySet()) {
                                 ta1.append("\n");
                                 ta1.append("Кабинет №" + cabinet + ": ");
+
                                 for (String cardInfo : map.get(cabinet)) {
                                     ta1.append(cardInfo);
                                 }
                             }
+
                             if (map.isEmpty()) {
                                 ta1.append(" отсутствует");
                             }
+
                             rs.close();
                             statement.close();
                             connection.close();
